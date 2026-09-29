@@ -1,0 +1,1153 @@
+﻿<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#0f1c14">
+<meta name="description" content="KisanSahay – Free AI-powered scheme eligibility assistant for farmers and low-income citizens in Maharashtra. Check PM-KISAN, PMFBY, KCC and 18 more schemes instantly.">
+<title>KisanSahay – Kisan Scheme Eligibility Assistant</title>
+<link rel="manifest" href="manifest.json">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Noto+Sans+Devanagari:wght@400;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script>
+tailwind.config = {
+  darkMode: 'class',
+  theme: {
+    extend: {
+      fontFamily: { sans: ['"Plus Jakarta Sans"','Noto Sans Devanagari','system-ui','sans-serif'] },
+      colors: {
+        soil:  { 50:'#f7f3ee',100:'#ede4d6',200:'#d9c9ac',300:'#c0a87d',400:'#a8894f',500:'#8a6f3a',600:'#6f572d',700:'#574422',800:'#3f3018',900:'#2a1f0e' },
+        leaf:  { 50:'#edfaf3',100:'#d1f5e2',200:'#a4eac4',300:'#6dd9a0',400:'#39c07a',500:'#1fa65f',600:'#178a4e',700:'#116e3e',800:'#0d5631',900:'#094026' },
+        sky:   { 50:'#eff8ff',100:'#dbeffe',200:'#b9dffd',300:'#7cc7fb',400:'#3aabf6',500:'#0e90e4',600:'#0272c2',700:'#035a9c',800:'#074d82',900:'#094169' },
+        amber: { 50:'#fffbeb',100:'#fef3c7',200:'#fde68a',300:'#fcd34d',400:'#fbbf24',500:'#f59e0b',600:'#d97706',700:'#b45309',800:'#92400e',900:'#78350f' },
+        crimson:{ 50:'#fff1f2',100:'#ffe4e6',200:'#fecdd3',300:'#fda4af',400:'#fb7185',500:'#f43f5e',600:'#e11d48',700:'#be123c',800:'#9f1239',900:'#881337' },
+      },
+      animation: {
+        'fade-in': 'fadeIn .4s ease both',
+        'slide-up': 'slideUp .35s ease both',
+        'pulse-ring': 'pulseRing 1.5s ease infinite',
+        'shimmer': 'shimmer 2s linear infinite',
+        'spin-slow': 'spin 3s linear infinite',
+      },
+      keyframes: {
+        fadeIn: { from:{opacity:0}, to:{opacity:1} },
+        slideUp: { from:{opacity:0,transform:'translateY(20px)'}, to:{opacity:1,transform:'translateY(0)'} },
+        pulseRing: { '0%,100%':{boxShadow:'0 0 0 0 rgba(31,166,95,.4)'}, '50%':{boxShadow:'0 0 0 12px rgba(31,166,95,0)'} },
+        shimmer: { from:{backgroundPosition:'-200% center'}, to:{backgroundPosition:'200% center'} },
+      },
+      backdropBlur: { xs:'2px' },
+    }
+  }
+}
+</script>
+<style>
+:root { --scrollbar-color: #1fa65f; }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Plus Jakarta Sans','Noto Sans Devanagari',system-ui,sans-serif; -webkit-font-smoothing: antialiased; }
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: #0f1c14; }
+::-webkit-scrollbar-thumb { background: var(--scrollbar-color); border-radius: 3px; }
+.glass { background: rgba(255,255,255,.04); backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,.08); }
+.glass-card { background: rgba(255,255,255,.05); backdrop-filter: blur(24px); border: 1px solid rgba(255,255,255,.1); border-radius: 1.25rem; }
+.gradient-text { background: linear-gradient(135deg, #6dd9a0 0%, #3aabf6 50%, #fbbf24 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+.shimmer-bg { background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,.06) 50%, transparent 100%); background-size: 200% 100%; animation: shimmer 2s linear infinite; }
+.eligible-glow { box-shadow: 0 0 0 1px rgba(31,166,95,.3), 0 4px 24px rgba(31,166,95,.1); }
+.unknown-glow { box-shadow: 0 0 0 1px rgba(251,191,36,.3), 0 4px 24px rgba(251,191,36,.1); }
+.ineligible-glow { box-shadow: 0 0 0 1px rgba(244,63,94,.3), 0 4px 24px rgba(244,63,94,.1); }
+.card-hover { transition: transform .2s, box-shadow .2s; }
+.card-hover:hover { transform: translateY(-2px); box-shadow: 0 12px 40px rgba(0,0,0,.3); }
+.voice-btn-active { animation: pulseRing 1.5s ease infinite !important; background: rgba(31,166,95,.2) !important; }
+input[type="file"] { display: none; }
+.file-upload-zone { border: 2px dashed rgba(109,217,160,.3); transition: border-color .2s, background .2s; }
+.file-upload-zone:hover, .file-upload-zone.drag-over { border-color: rgba(109,217,160,.7); background: rgba(109,217,160,.05); }
+.progress-ring { transform: rotate(-90deg); }
+.tab-active { background: linear-gradient(135deg, #1fa65f, #0272c2); color: white; }
+.step-active { background: linear-gradient(135deg, #1fa65f, #39c07a); }
+.step-done { background: #178a4e; }
+@media (max-width: 640px) { .hide-mobile { display: none !important; } }
+@media print {
+  .no-print { display: none !important; }
+  body { background: white; color: black; font-size: 10pt; }
+  .glass-card { background: white; border: 1px solid #ccc; border-radius: 4px; }
+  .gradient-text { -webkit-text-fill-color: #166534; }
+}
+</style>
+</head>
+
+<body class="bg-gray-950 text-gray-100 min-h-screen">
+
+<!-- ═══ BACKGROUND PATTERN ═══════════════════════════════════════════════ -->
+<div class="fixed inset-0 overflow-hidden pointer-events-none z-0">
+  <div class="absolute -top-40 -left-40 w-96 h-96 bg-leaf-700/20 rounded-full blur-3xl"></div>
+  <div class="absolute top-1/3 -right-32 w-80 h-80 bg-sky-800/15 rounded-full blur-3xl"></div>
+  <div class="absolute bottom-0 left-1/3 w-72 h-72 bg-soil-700/15 rounded-full blur-3xl"></div>
+  <svg class="absolute inset-0 w-full h-full opacity-[0.02]" xmlns="http://www.w3.org/2000/svg">
+    <defs><pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+      <path d="M 40 0 L 0 0 0 40" fill="none" stroke="white" stroke-width="1"/>
+    </pattern></defs>
+    <rect width="100%" height="100%" fill="url(#grid)"/>
+  </svg>
+</div>
+
+<!-- ═══ NAVBAR ════════════════════════════════════════════════════════════ -->
+<nav class="glass sticky top-0 z-50 px-4 py-3 no-print">
+  <div class="max-w-7xl mx-auto flex items-center justify-between gap-4">
+    <!-- Logo -->
+    <div class="flex items-center gap-3">
+      <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-leaf-500 to-leaf-700 flex items-center justify-center text-lg shadow-lg">🌾</div>
+      <div>
+        <div class="font-bold text-white text-base leading-tight">KisanSahay</div>
+        <div class="text-xs text-gray-400 leading-tight" id="nav-subtitle">Policy Discovery Assistant</div>
+      </div>
+    </div>
+    <!-- Nav links (desktop) -->
+    <div class="hidden md:flex items-center gap-1 glass rounded-xl p-1">
+      <button onclick="showTab('check')" id="tab-check" class="tab-btn px-4 py-1.5 rounded-lg text-sm font-medium transition-all tab-active" data-i="tabCheck"></button>
+      <button onclick="showTab('quiz')" id="tab-quiz" class="tab-btn px-4 py-1.5 rounded-lg text-sm font-medium transition-all text-gray-400 hover:text-white" data-i="tabQuiz"></button>
+      <button onclick="showTab('schemes')" id="tab-schemes" class="tab-btn px-4 py-1.5 rounded-lg text-sm font-medium transition-all text-gray-400 hover:text-white" data-i="tabSchemes"></button>
+      <button onclick="showTab('tests')" id="tab-tests" class="tab-btn px-4 py-1.5 rounded-lg text-sm font-medium transition-all text-gray-400 hover:text-white" data-i="tabTests"></button>
+    </div>
+    <!-- Language + controls -->
+    <div class="flex items-center gap-2">
+      <select id="lang-select" onchange="setLang(this.value)"
+        class="bg-gray-800/80 border border-gray-700 text-sm text-gray-300 rounded-lg px-2 py-1.5 cursor-pointer focus:outline-none focus:border-leaf-500">
+        <option value="en">🇬🇧 EN</option>
+        <option value="hi">🇮🇳 हिंदी</option>
+        <option value="mr">🟠 मराठी</option>
+      </select>
+      <button onclick="window.print()" title="Print summary"
+        class="no-print p-2 rounded-lg glass text-gray-400 hover:text-white transition-colors text-sm">🖨</button>
+    </div>
+  </div>
+  <!-- Mobile nav -->
+  <div class="md:hidden flex gap-1 mt-2 overflow-x-auto pb-1">
+    <button onclick="showTab('check')" class="tab-btn-m flex-none px-3 py-1.5 rounded-lg text-xs font-medium tab-active whitespace-nowrap" data-i="tabCheck"></button>
+    <button onclick="showTab('quiz')" class="tab-btn-m flex-none px-3 py-1.5 rounded-lg text-xs font-medium text-gray-400 whitespace-nowrap" data-i="tabQuiz"></button>
+    <button onclick="showTab('schemes')" class="tab-btn-m flex-none px-3 py-1.5 rounded-lg text-xs font-medium text-gray-400 whitespace-nowrap" data-i="tabSchemes"></button>
+    <button onclick="showTab('tests')" class="tab-btn-m flex-none px-3 py-1.5 rounded-lg text-xs font-medium text-gray-400 whitespace-nowrap" data-i="tabTests"></button>
+  </div>
+</nav>
+
+<!-- ═══ PROTOTYPE BANNER ══════════════════════════════════════════════════ -->
+<div class="bg-amber-500/10 border-b border-amber-500/20 px-4 py-2 text-center no-print">
+  <p class="text-amber-400 text-xs font-medium" data-i="proto"></p>
+</div>
+
+<!-- ═══ MAIN CONTAINER ═══════════════════════════════════════════════════ -->
+<main class="relative z-10 max-w-7xl mx-auto px-4 py-6 pb-24">
+
+<!-- ════════════════════════════════════════════════════════════════════════
+     TAB: CHECK ELIGIBILITY
+════════════════════════════════════════════════════════════════════════ -->
+<div id="tab-check-panel">
+
+<!-- Hero Section -->
+<div class="glass-card p-6 md:p-8 mb-6 text-center animate-fade-in">
+  <div class="inline-flex items-center gap-2 glass rounded-full px-4 py-1.5 mb-4 text-xs text-leaf-400 font-medium">
+    <span class="w-1.5 h-1.5 rounded-full bg-leaf-400 animate-pulse"></span>
+    <span data-i="heroTag"></span>
+  </div>
+  <h1 class="text-3xl md:text-4xl font-extrabold text-white mb-3" data-i="heroTitle"></h1>
+  <p class="text-gray-400 max-w-xl mx-auto text-sm md:text-base" data-i="heroSubtitle"></p>
+  <!-- Stats row -->
+  <div class="flex items-center justify-center gap-6 mt-6 flex-wrap">
+    <div class="text-center">
+      <div class="text-2xl font-bold gradient-text">21</div>
+      <div class="text-xs text-gray-500" data-i="statsSchemes"></div>
+    </div>
+    <div class="w-px h-8 bg-gray-700"></div>
+    <div class="text-center">
+      <div class="text-2xl font-bold gradient-text">₹0</div>
+      <div class="text-xs text-gray-500" data-i="statsCost"></div>
+    </div>
+    <div class="w-px h-8 bg-gray-700"></div>
+    <div class="text-center">
+      <div class="text-2xl font-bold gradient-text">30s</div>
+      <div class="text-xs text-gray-500" data-i="statsTime"></div>
+    </div>
+  </div>
+</div>
+
+<!-- Demo Buttons -->
+<div class="glass-card p-5 mb-5 no-print animate-fade-in">
+  <div class="flex items-center gap-2 mb-3">
+    <span class="text-lg">🎯</span>
+    <h2 class="font-semibold text-white text-sm" data-i="demoTitle"></h2>
+    <span class="ml-auto text-xs text-gray-500 glass rounded px-2 py-0.5">Demo</span>
+  </div>
+  <div class="flex flex-wrap gap-2">
+    <button onclick="loadDemo(1)" class="flex-1 min-w-fit glass border border-leaf-500/30 text-leaf-400 hover:bg-leaf-500/10 rounded-xl px-4 py-2.5 text-sm font-medium transition-all card-hover flex items-center gap-2">
+      <span>✅</span> <span data-i="d1"></span>
+    </button>
+    <button onclick="loadDemo(2)" class="flex-1 min-w-fit glass border border-amber-500/30 text-amber-400 hover:bg-amber-500/10 rounded-xl px-4 py-2.5 text-sm font-medium transition-all card-hover flex items-center gap-2">
+      <span>⚠️</span> <span data-i="d2"></span>
+    </button>
+    <button onclick="loadDemo(3)" class="flex-1 min-w-fit glass border border-crimson-500/30 text-crimson-400 hover:bg-crimson-500/10 rounded-xl px-4 py-2.5 text-sm font-medium transition-all card-hover flex items-center gap-2">
+      <span>❌</span> <span data-i="d3"></span>
+    </button>
+  </div>
+</div>
+
+<div class="grid md:grid-cols-3 gap-5">
+<!-- ── LEFT: Input Form ──────────────────────────────────────────────── -->
+<div class="md:col-span-2 space-y-5">
+
+<!-- Applicant Profile Card -->
+<div class="glass-card p-5 animate-slide-up">
+  <h2 class="font-bold text-white text-base mb-4 flex items-center gap-2">
+    <span class="w-6 h-6 rounded-lg bg-leaf-500/20 flex items-center justify-center text-xs">👤</span>
+    <span data-i="profTitle"></span>
+  </h2>
+  <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+    <!-- Name field with voice -->
+    <div class="sm:col-span-2">
+      <label class="block text-xs text-gray-400 font-medium mb-1.5" data-i="fieldName"></label>
+      <div class="flex gap-2">
+        <input id="full_name" type="text" placeholder="Ramesh Patil / रमेश पाटील"
+          class="flex-1 bg-gray-900/80 border border-gray-700 focus:border-leaf-500 rounded-xl px-3 py-2.5 text-sm text-white placeholder-gray-600 outline-none transition-colors">
+        <button id="voice-btn" onclick="startVoice()" title="Voice input"
+          class="w-11 h-11 rounded-xl glass border border-gray-700 hover:border-leaf-500 flex items-center justify-center transition-all text-lg">🎤</button>
+      </div>
+      <div id="voice-status" class="text-xs text-gray-500 mt-1 hidden"></div>
+    </div>
+    <!-- Occupation -->
+    <div>
+      <label class="block text-xs text-gray-400 font-medium mb-1.5" data-i="fieldOcc"></label>
+      <select id="occupation"
+        class="w-full bg-gray-900/80 border border-gray-700 focus:border-leaf-500 rounded-xl px-3 py-2.5 text-sm text-white outline-none transition-colors cursor-pointer">
+        <option value="">-- Select --</option>
+        <option value="farmer" data-i-opt="optFarmer"></option>
+        <option value="laborer" data-i-opt="optLaborer"></option>
+        <option value="business" data-i-opt="optBusiness"></option>
+        <option value="other" data-i-opt="optOther"></option>
+      </select>
+    </div>
+    <!-- Income -->
+    <div>
+      <label class="block text-xs text-gray-400 font-medium mb-1.5" data-i="fieldInc"></label>
+      <input id="annual_income" type="text" placeholder="₹1,50,000 or 1.5 lakh"
+        class="w-full bg-gray-900/80 border border-gray-700 focus:border-leaf-500 rounded-xl px-3 py-2.5 text-sm text-white placeholder-gray-600 outline-none transition-colors">
+    </div>
+    <!-- Land -->
+    <div>
+      <label class="block text-xs text-gray-400 font-medium mb-1.5" data-i="fieldLand"></label>
+      <input id="land_holding" type="text" placeholder="1.2 hectares / 3 acres"
+        class="w-full bg-gray-900/80 border border-gray-700 focus:border-leaf-500 rounded-xl px-3 py-2.5 text-sm text-white placeholder-gray-600 outline-none transition-colors">
+    </div>
+    <!-- Income Tax -->
+    <div>
+      <label class="block text-xs text-gray-400 font-medium mb-1.5" data-i="fieldTax"></label>
+      <select id="is_taxpayer"
+        class="w-full bg-gray-900/80 border border-gray-700 focus:border-leaf-500 rounded-xl px-3 py-2.5 text-sm text-white outline-none transition-colors cursor-pointer">
+        <option value="">-- Select --</option>
+        <option value="no" data-i-opt="optNo"></option>
+        <option value="yes" data-i-opt="optYes"></option>
+      </select>
+    </div>
+    <!-- Aadhaar -->
+    <div>
+      <label class="block text-xs text-gray-400 font-medium mb-1.5" data-i="fieldAadhaar"></label>
+      <input id="aadhaar" type="text" maxlength="14" inputmode="numeric" placeholder="XXXX XXXX XXXX"
+        class="w-full bg-gray-900/80 border border-gray-700 focus:border-leaf-500 rounded-xl px-3 py-2.5 text-sm text-white placeholder-gray-600 outline-none transition-colors font-mono"
+        oninput="maskAadhaarInput(this)">
+      <div class="text-xs text-gray-600 mt-1" data-i="aadhaarNote"></div>
+    </div>
+    <!-- Caste (optional) -->
+    <div>
+      <label class="block text-xs text-gray-400 font-medium mb-1.5" data-i="fieldCaste"></label>
+      <select id="caste_category"
+        class="w-full bg-gray-900/80 border border-gray-700 focus:border-leaf-500 rounded-xl px-3 py-2.5 text-sm text-white outline-none transition-colors cursor-pointer">
+        <option value="">-- <span data-i="optOptional"></span> --</option>
+        <option value="general">General / Open</option>
+        <option value="obc">OBC</option>
+        <option value="sc_st">SC / ST</option>
+      </select>
+    </div>
+    <!-- Age -->
+    <div>
+      <label class="block text-xs text-gray-400 font-medium mb-1.5" data-i="fieldAge"></label>
+      <input id="age" type="number" min="18" max="100" placeholder="35"
+        class="w-full bg-gray-900/80 border border-gray-700 focus:border-leaf-500 rounded-xl px-3 py-2.5 text-sm text-white placeholder-gray-600 outline-none transition-colors">
+    </div>
+  </div>
+  <!-- Consent -->
+  <label class="flex items-start gap-3 mt-4 cursor-pointer">
+    <input type="checkbox" id="consent" class="mt-0.5 w-4 h-4 accent-leaf-500">
+    <span class="text-xs text-gray-400 leading-relaxed" data-i="consentText"></span>
+  </label>
+  <!-- Submit -->
+  <button onclick="checkEligibility()" id="check-btn"
+    class="mt-4 w-full bg-gradient-to-r from-leaf-600 to-leaf-500 hover:from-leaf-500 hover:to-leaf-400 text-white font-bold rounded-xl py-3 px-6 transition-all shadow-lg hover:shadow-leaf-500/20 flex items-center justify-center gap-2 text-sm">
+    <span id="check-btn-icon">🔍</span>
+    <span data-i="btnCheck"></span>
+  </button>
+  <div id="err-msg" class="hidden mt-3 p-3 rounded-xl bg-crimson-500/10 border border-crimson-500/30 text-crimson-400 text-sm"></div>
+</div>
+
+<!-- Document Upload Card -->
+<div class="glass-card p-5 animate-slide-up no-print">
+  <h2 class="font-bold text-white text-base mb-4 flex items-center gap-2">
+    <span class="w-6 h-6 rounded-lg bg-sky-500/20 flex items-center justify-center text-xs">📄</span>
+    <span data-i="uploadTitle"></span>
+  </h2>
+  <label for="doc-file" class="file-upload-zone rounded-xl p-6 flex flex-col items-center gap-3 cursor-pointer block">
+    <div class="text-3xl">📂</div>
+    <div class="text-center">
+      <div class="text-sm font-medium text-gray-300" data-i="uploadPrompt"></div>
+      <div class="text-xs text-gray-500 mt-1">PDF, JPG, PNG, TXT (max 10MB)</div>
+    </div>
+    <div class="glass border border-leaf-500/30 text-leaf-400 px-4 py-1.5 rounded-lg text-xs font-medium" data-i="uploadBtn"></div>
+  </label>
+  <input type="file" id="doc-file" accept=".pdf,.jpg,.jpeg,.png,.txt" onchange="handleFileUpload(this.files[0])">
+  <div class="flex gap-2 mt-3">
+    <button onclick="useSampleDoc()" class="flex-1 glass border border-gray-700 hover:border-gray-600 text-gray-400 hover:text-gray-300 rounded-xl py-2 text-xs font-medium transition-all" data-i="sampleBtn"></button>
+    <button onclick="useSampleDoc2()" class="flex-1 glass border border-gray-700 hover:border-gray-600 text-gray-400 hover:text-gray-300 rounded-xl py-2 text-xs font-medium transition-all" data-i="sampleBtn2"></button>
+  </div>
+  <div id="blur-alert" class="hidden mt-3 p-3 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-400 text-xs flex items-start gap-2">
+    <span>⚠️</span><span></span>
+  </div>
+  <div id="extracted-fields" class="mt-4 space-y-3 hidden">
+    <div class="text-sm font-medium text-gray-300 flex items-center gap-2">
+      <span>🔍</span><span data-i="extractedTitle"></span>
+    </div>
+    <div id="extracted-body"></div>
+    <button onclick="confirmExtracted()" class="w-full glass border border-leaf-500/40 text-leaf-400 hover:bg-leaf-500/10 rounded-xl py-2 text-sm font-medium transition-all flex items-center justify-center gap-2">
+      <span>✓</span><span data-i="confirmBtn"></span>
+    </button>
+  </div>
+</div>
+
+</div><!-- end left col -->
+
+<!-- ── RIGHT: Summary Panel ──────────────────────────────────────────── -->
+<div class="space-y-5">
+
+<!-- Summary Stats Card -->
+<div class="glass-card p-5 animate-slide-up">
+  <h2 class="font-bold text-white text-sm mb-4" data-i="summaryTitle"></h2>
+  <div id="summary-placeholder" class="text-center py-8">
+    <div class="text-4xl mb-3">🌾</div>
+    <p class="text-gray-500 text-sm" data-i="summaryPlaceholder"></p>
+  </div>
+  <div id="summary-stats" class="hidden space-y-3">
+    <!-- Filled by JS -->
+  </div>
+</div>
+
+<!-- CSC Print Summary -->
+<div class="glass-card p-5 animate-slide-up no-print">
+  <h2 class="font-bold text-white text-sm mb-3 flex items-center gap-2">
+    <span>🖨</span><span data-i="cscTitle"></span>
+  </h2>
+  <p class="text-gray-500 text-xs mb-3" data-i="cscDesc"></p>
+  <button onclick="downloadPDF()" id="pdf-btn" disabled
+    class="w-full glass border border-gray-700 text-gray-500 rounded-xl py-2 text-sm font-medium transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2">
+    <span>📥</span><span data-i="pdfBtn"></span>
+  </button>
+</div>
+
+<!-- Quick Guide Card -->
+<div class="glass-card p-5 animate-slide-up no-print">
+  <h2 class="font-bold text-white text-sm mb-3" data-i="guideTitle"></h2>
+  <ol class="space-y-2.5">
+    <li class="flex gap-2.5 text-xs text-gray-400">
+      <span class="w-5 h-5 rounded-full bg-leaf-500/20 text-leaf-400 flex items-center justify-center text-xs font-bold flex-shrink-0">1</span>
+      <span data-i="step1"></span>
+    </li>
+    <li class="flex gap-2.5 text-xs text-gray-400">
+      <span class="w-5 h-5 rounded-full bg-leaf-500/20 text-leaf-400 flex items-center justify-center text-xs font-bold flex-shrink-0">2</span>
+      <span data-i="step2"></span>
+    </li>
+    <li class="flex gap-2.5 text-xs text-gray-400">
+      <span class="w-5 h-5 rounded-full bg-leaf-500/20 text-leaf-400 flex items-center justify-center text-xs font-bold flex-shrink-0">3</span>
+      <span data-i="step3"></span>
+    </li>
+    <li class="flex gap-2.5 text-xs text-gray-400">
+      <span class="w-5 h-5 rounded-full bg-leaf-500/20 text-leaf-400 flex items-center justify-center text-xs font-bold flex-shrink-0">4</span>
+      <span data-i="step4"></span>
+    </li>
+  </ol>
+</div>
+
+</div><!-- end right col -->
+</div><!-- end grid -->
+
+<!-- ═══ RESULTS PANEL ══════════════════════════════════════════════════════ -->
+<div id="results-panel" class="mt-6 hidden">
+  <!-- Results injected by JS -->
+</div>
+
+</div><!-- end tab-check-panel -->
+
+<!-- ════════════════════════════════════════════════════════════════════════
+     TAB: ADAPTIVE QUIZ
+════════════════════════════════════════════════════════════════════════ -->
+<div id="tab-quiz-panel" class="hidden">
+<div class="glass-card p-6 md:p-8 animate-fade-in">
+  <div class="text-center mb-8">
+    <div class="text-4xl mb-3">🧭</div>
+    <h2 class="text-2xl font-bold text-white mb-2" data-i="quizTitle"></h2>
+    <p class="text-gray-400 text-sm" data-i="quizSubtitle"></p>
+  </div>
+  <!-- Progress -->
+  <div class="mb-6">
+    <div class="flex justify-between text-xs text-gray-500 mb-2">
+      <span id="quiz-step-label">Question 1 of 6</span>
+      <span id="quiz-pct">0%</span>
+    </div>
+    <div class="w-full bg-gray-800 rounded-full h-2">
+      <div id="quiz-progress-bar" class="bg-gradient-to-r from-leaf-600 to-leaf-400 h-2 rounded-full transition-all duration-500" style="width:0%"></div>
+    </div>
+  </div>
+  <!-- Question Area -->
+  <div id="quiz-area">
+    <!-- Rendered by JS -->
+  </div>
+</div>
+</div>
+
+<!-- ════════════════════════════════════════════════════════════════════════
+     TAB: ALL SCHEMES
+════════════════════════════════════════════════════════════════════════ -->
+<div id="tab-schemes-panel" class="hidden animate-fade-in">
+<div class="mb-5 flex flex-col sm:flex-row gap-3">
+  <div class="flex-1">
+    <input type="text" id="scheme-search" oninput="filterSchemes(this.value)"
+      class="w-full bg-gray-900/80 border border-gray-700 focus:border-leaf-500 rounded-xl px-4 py-2.5 text-sm text-white placeholder-gray-600 outline-none transition-colors"
+      data-i-ph="schemeSearchPh">
+  </div>
+  <div class="flex gap-2 flex-wrap">
+    <button onclick="filterSchemesByGov('all')" class="scheme-filter-btn glass border border-leaf-500/30 text-leaf-400 px-3 py-2 rounded-xl text-xs font-medium" data-i="govAll"></button>
+    <button onclick="filterSchemesByGov('Central')" class="scheme-filter-btn glass border border-gray-700 text-gray-400 px-3 py-2 rounded-xl text-xs font-medium" data-i="govCentral"></button>
+    <button onclick="filterSchemesByGov('Maharashtra')" class="scheme-filter-btn glass border border-gray-700 text-gray-400 px-3 py-2 rounded-xl text-xs font-medium" data-i="govState"></button>
+  </div>
+</div>
+<div id="schemes-grid" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+  <!-- Rendered by JS -->
+</div>
+</div>
+
+<!-- ════════════════════════════════════════════════════════════════════════
+     TAB: TEST SUITE
+════════════════════════════════════════════════════════════════════════ -->
+<div id="tab-tests-panel" class="hidden animate-fade-in">
+<div class="glass-card p-6">
+  <div class="flex items-center justify-between mb-5">
+    <div>
+      <h2 class="font-bold text-white text-lg" data-i="testsTitle"></h2>
+      <p class="text-gray-500 text-sm mt-1" data-i="testsDesc"></p>
+    </div>
+    <button onclick="runTests()" class="bg-gradient-to-r from-leaf-600 to-leaf-500 text-white px-5 py-2.5 rounded-xl text-sm font-bold hover:from-leaf-500 hover:to-leaf-400 transition-all flex items-center gap-2">
+      <span id="test-run-icon">▶</span>
+      <span data-i="runTests"></span>
+    </button>
+  </div>
+  <div id="test-results" class="space-y-3">
+    <div class="text-center py-12 text-gray-600">
+      <div class="text-4xl mb-3">🧪</div>
+      <p class="text-sm" data-i="testsPlaceholder"></p>
+    </div>
+  </div>
+</div>
+</div>
+
+</main>
+
+<!-- ═══ FOOTER ════════════════════════════════════════════════════════════ -->
+<footer class="relative z-10 glass border-t border-white/5 px-4 py-4 mt-8 no-print">
+  <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-gray-600">
+    <div class="flex items-center gap-2">
+      <span>🌾</span>
+      <span class="font-medium text-gray-500">KisanSahay v2.0</span>
+    </div>
+    <p data-i="footerNote"></p>
+    <div class="flex items-center gap-4">
+      <a href="https://pmkisan.gov.in" target="_blank" class="hover:text-leaf-400 transition-colors">PM-KISAN</a>
+      <a href="https://mahadbtmahait.gov.in" target="_blank" class="hover:text-leaf-400 transition-colors">MahaDBT</a>
+      <a href="https://enam.gov.in" target="_blank" class="hover:text-leaf-400 transition-colors">eNAM</a>
+    </div>
+  </div>
+</footer>
+<script>
+
+// ════════════════════════════════════════════════════════════════════════════
+// KISANSAHAY v2.0 – COMPLETE FRONTEND ENGINE
+// ════════════════════════════════════════════════════════════════════════════
+
+// ── I18N Translations ──────────────────────────────────────────────────────
+const TRANSLATIONS = {
+  en: {
+    proto: "⚠ Prototype: Scheme rules are for demonstration. Not legal advice. Always verify at official portals.",
+    heroTag: "Free · Instant · 21 Schemes",
+    heroTitle: "Find Your Government Benefits",
+    heroSubtitle: "Check eligibility for 21 Central & Maharashtra schemes instantly. For farmers, labourers & low-income families.",
+    statsSchemes: "Schemes covered", statsCost: "Completely free", statsTime: "Instant results",
+    tabCheck: "Check Eligibility", tabQuiz: "Quick Quiz", tabSchemes: "All Schemes", tabTests: "Test Suite",
+    demoTitle: "Hackathon Demo – Try sample profiles:",
+    d1: "Eligible Farmer (Ramesh)", d2: "Borderline / Missing Docs (Sunita)", d3: "Ineligible (High Income)",
+    profTitle: "Applicant Profile", fieldName: "Full Name", fieldOcc: "Occupation", fieldInc: "Annual Income",
+    fieldLand: "Land Holding (hectares or acres)", fieldTax: "Income Tax Payer?",
+    fieldAadhaar: "Aadhaar Number (auto-masked)", aadhaarNote: "🔒 Stored only as last-4 digits per DPDP Act",
+    fieldCaste: "Caste Category (optional)", fieldAge: "Age (optional)",
+    optFarmer: "Farmer (Shetkari)", optLaborer: "Agricultural Laborer", optBusiness: "Business / Self-employed",
+    optOther: "Other", optNo: "No (Not an income-tax payer)", optYes: "Yes (Income-tax payer)", optOptional: "Optional",
+    consentText: "I give my informed consent under the DPDP Act 2023 for my information to be processed solely for government scheme eligibility assessment. No data is stored.",
+    btnCheck: "Check All 21 Schemes",
+    uploadTitle: "Upload Document for Auto-Extraction", uploadPrompt: "Drag & drop or click to upload",
+    uploadBtn: "Choose File", sampleBtn: "📋 Sample Land Record", sampleBtn2: "📑 Sample Income Certificate",
+    extractedTitle: "Extracted Fields (Review & Confirm)",
+    confirmBtn: "Confirm & Check Eligibility",
+    summaryTitle: "Your Eligibility Summary", summaryPlaceholder: "Fill in your details and click 'Check All 21 Schemes' to see your results.",
+    cscTitle: "CSC Printable Summary", cscDesc: "1-page printout for Common Service Centre (CSC) visits",
+    pdfBtn: "Download PDF Summary",
+    guideTitle: "How It Works",
+    step1: "Fill in your details or upload a land record / income certificate",
+    step2: "Our engine checks all 21 schemes against official eligibility rules",
+    step3: "See Eligible, Unknown (missing docs), or Ineligible results",
+    step4: "Download your 1-page summary and apply at the official portal",
+    quizTitle: "Quick Eligibility Quiz", quizSubtitle: "Answer 6 questions to find your best-matching schemes",
+    schemeSearchPh: "Search schemes...", govAll: "All", govCentral: "Central Govt", govState: "Maharashtra",
+    testsTitle: "Automated Test Suite", testsDesc: "Validates the deterministic rule engine with known test cases",
+    runTests: "Run All Tests", testsPlaceholder: "Click 'Run All Tests' to validate the engine",
+    ELIGIBLE: "ELIGIBLE", INELIGIBLE: "NOT ELIGIBLE", UNKNOWN: "NEEDS DOCS",
+    eligible_label: "Eligible", ineligible_label: "Not Eligible", unknown_label: "Missing Documents",
+    benefitLabel: "Estimated Benefit:", nearMissLabel: "Near-miss margin:",
+    missingDocsTitle: "Missing Document Roadmap",
+    portal: "Portal", cost: "Cost", timeline: "Timeline",
+    sourceTitle: "Official Source", applyNow: "Apply Now",
+    consentError: "Please check the consent checkbox before proceeding.",
+    checking: "Checking eligibility...",
+    footerNote: "Rules based on official scheme guidelines. Verify at official portals before applying.",
+    schemeCard_eligible: "eligible", schemeCard_unknown: "check docs", schemeCard_ineligible: "ineligible",
+  },
+  hi: {
+    proto: "प्रोटोटाइप: योजना नियम केवल प्रदर्शन के लिए हैं। यह कानूनी सलाह नहीं है।",
+    heroTag: "मुफ़्त · तुरंत · 21 योजनाएँ",
+    heroTitle: "अपने सरकारी लाभ खोजें",
+    heroSubtitle: "21 केंद्रीय और महाराष्ट्र योजनाओं की तुरंत पात्रता जाँचें।",
+    statsSchemes: "योजनाएँ", statsCost: "बिल्कुल मुफ़्त", statsTime: "तुरंत परिणाम",
+    tabCheck: "पात्रता जाँचें", tabQuiz: "त्वरित प्रश्नोत्तरी", tabSchemes: "सभी योजनाएँ", tabTests: "परीक्षण",
+    demoTitle: "हैकाथॉन डेमो – नमूना प्रोफ़ाइल आज़माएँ:",
+    d1: "पात्र किसान (रमेश)", d2: "सीमारेखा / दस्तावेज़ अनुपलब्ध (सुनीता)", d3: "अपात्र (उच्च आय)",
+    profTitle: "आवेदक की जानकारी", fieldName: "पूरा नाम", fieldOcc: "व्यवसाय", fieldInc: "वार्षिक आय",
+    fieldLand: "भूमि (हेक्टेयर या एकड़ में)", fieldTax: "क्या आप आयकर दाता हैं?",
+    fieldAadhaar: "आधार नंबर (स्वचालित मास्क)", aadhaarNote: "DPDP अधिनियम के तहत केवल अंतिम 4 अंक",
+    fieldCaste: "जाति (वैकल्पिक)", fieldAge: "आयु (वैकल्पिक)",
+    optFarmer: "किसान (शेतकरी)", optLaborer: "कृषि मजदूर", optBusiness: "व्यापार / स्व-रोज़गार",
+    optOther: "अन्य", optNo: "नहीं (आयकर दाता नहीं)", optYes: "हाँ (आयकर दाता)", optOptional: "वैकल्पिक",
+    consentText: "मैं DPDP अधिनियम 2023 के तहत सरकारी योजना पात्रता के लिए अपनी जानकारी के उपयोग की सूचित सहमति देता/देती हूँ।",
+    btnCheck: "21 योजनाएँ जाँचें",
+    uploadTitle: "दस्तावेज़ अपलोड करें", uploadPrompt: "खींचें और छोड़ें या क्लिक करें",
+    uploadBtn: "फ़ाइल चुनें", sampleBtn: "नमूना भूमि रिकॉर्ड", sampleBtn2: "नमूना आय प्रमाण",
+    extractedTitle: "निकाले गए विवरण (जाँचें और पुष्टि करें)",
+    confirmBtn: "पुष्टि करें और पात्रता जाँचें",
+    summaryTitle: "आपका पात्रता सारांश", summaryPlaceholder: "विवरण भरें और '21 योजनाएँ जाँचें' पर क्लिक करें।",
+    cscTitle: "CSC प्रिंट सारांश", cscDesc: "Common Service Centre के लिए 1 पृष्ठ का प्रिंटआउट",
+    pdfBtn: "PDF सारांश डाउनलोड करें",
+    guideTitle: "कैसे काम करता है",
+    step1: "अपना विवरण भरें या भूमि रिकॉर्ड अपलोड करें",
+    step2: "हमारा इंजन 21 योजनाओं की आधिकारिक पात्रता नियमों से जाँच करता है",
+    step3: "पात्र, अज्ञात (दस्तावेज़ आवश्यक), या अपात्र देखें",
+    step4: "1 पृष्ठ का सारांश डाउनलोड करें और आधिकारिक पोर्टल पर आवेदन करें",
+    quizTitle: "त्वरित पात्रता प्रश्नोत्तरी", quizSubtitle: "6 प्रश्नों के उत्तर दें",
+    schemeSearchPh: "योजना खोजें...", govAll: "सभी", govCentral: "केंद्र सरकार", govState: "महाराष्ट्र",
+    testsTitle: "स्वचालित परीक्षण सूट", testsDesc: "नियम इंजन की सटीकता जाँचें",
+    runTests: "सभी परीक्षण चलाएँ", testsPlaceholder: "परीक्षण चलाने के लिए क्लिक करें",
+    ELIGIBLE: "पात्र", INELIGIBLE: "अपात्र", UNKNOWN: "दस्तावेज़ चाहिए",
+    eligible_label: "पात्र", ineligible_label: "अपात्र", unknown_label: "दस्तावेज़ अनुपलब्ध",
+    benefitLabel: "अनुमानित लाभ:", nearMissLabel: "निकट-चूक मार्जिन:",
+    missingDocsTitle: "अनुपलब्ध दस्तावेज़ रोडमैप",
+    portal: "पोर्टल", cost: "लागत", timeline: "समय",
+    sourceTitle: "आधिकारिक स्रोत", applyNow: "अभी आवेदन करें",
+    consentError: "कृपया सहमति चेकबॉक्स पर क्लिक करें।",
+    checking: "पात्रता जाँच रहा है...",
+    footerNote: "नियम आधिकारिक योजना दिशानिर्देशों पर आधारित हैं।",
+    schemeCard_eligible: "पात्र", schemeCard_unknown: "दस्तावेज़ जाँचें", schemeCard_ineligible: "अपात्र",
+  },
+  mr: {
+    proto: "प्रोटोटाइप: योजना नियम केवल प्रात्यक्षिकासाठी आहेत. हे कायदेशीर सल्ला नाही.",
+    heroTag: "मोफत · तत्काळ · 21 योजना",
+    heroTitle: "तुमचे सरकारी लाभ शोधा",
+    heroSubtitle: "21 केंद्र आणि महाराष्ट्र योजनांसाठी तत्काळ पात्रता तपासा.",
+    statsSchemes: "योजना", statsCost: "पूर्णपणे मोफत", statsTime: "तत्काळ निकाल",
+    tabCheck: "पात्रता तपासा", tabQuiz: "द्रुत प्रश्नमंजुषा", tabSchemes: "सर्व योजना", tabTests: "चाचणी",
+    demoTitle: "हॅकाथॉन डेमो – नमुना प्रोफाइल वापरा:",
+    d1: "पात्र शेतकरी (रमेश)", d2: "सीमारेषा / कागदपत्रे अनुपलब्ध (सुनीता)", d3: "अपात्र (उच्च उत्पन्न)",
+    profTitle: "अर्जदाराची माहिती", fieldName: "पूर्ण नाव", fieldOcc: "व्यवसाय", fieldInc: "वार्षिक उत्पन्न",
+    fieldLand: "जमीन (हेक्टर किंवा एकर)", fieldTax: "आयकर भरता का?",
+    fieldAadhaar: "आधार क्रमांक (स्वयं-मास्क)", aadhaarNote: "DPDP कायद्यानुसार फक्त शेवटचे 4 अंक",
+    fieldCaste: "जात (ऐच्छिक)", fieldAge: "वय (ऐच्छिक)",
+    optFarmer: "शेतकरी", optLaborer: "शेतमजूर", optBusiness: "व्यापार / स्वयंरोजगार",
+    optOther: "इतर", optNo: "नाही (आयकर भरत नाही)", optYes: "होय (आयकर भरतो/भरते)", optOptional: "ऐच्छिक",
+    consentText: "DPDP कायदा 2023 अंतर्गत मी सरकारी योजना पात्रतेसाठी माझ्या माहितीच्या वापरास सूचित संमती देतो/देते.",
+    btnCheck: "21 योजना तपासा",
+    uploadTitle: "कागदपत्र अपलोड करा", uploadPrompt: "ड्रॅग करा किंवा क्लिक करा",
+    uploadBtn: "फाइल निवडा", sampleBtn: "नमुना जमीन नोंद", sampleBtn2: "नमुना उत्पन्न प्रमाणपत्र",
+    extractedTitle: "काढलेली माहिती (तपासा आणि पुष्टी करा)",
+    confirmBtn: "पुष्टी करा आणि पात्रता तपासा",
+    summaryTitle: "तुमचा पात्रता सारांश", summaryPlaceholder: "माहिती भरा आणि '21 योजना तपासा' वर क्लिक करा.",
+    cscTitle: "CSC मुद्रण सारांश", cscDesc: "Common Service Centre साठी 1 पृष्ठाची छपाई",
+    pdfBtn: "PDF सारांश डाउनलोड करा",
+    guideTitle: "हे कसे कार्य करते",
+    step1: "तुमची माहिती भरा किंवा जमीन नोंद अपलोड करा",
+    step2: "आमचे इंजिन 21 योजनांच्या अधिकृत नियमांविरुद्ध तपास करते",
+    step3: "पात्र, अज्ञात (कागदपत्रे आवश्यक), किंवा अपात्र पाहा",
+    step4: "1 पृष्ठाचा सारांश डाउनलोड करा आणि अधिकृत पोर्टलवर अर्ज करा",
+    quizTitle: "द्रुत पात्रता प्रश्नमंजुषा", quizSubtitle: "6 प्रश्नांची उत्तरे द्या",
+    schemeSearchPh: "योजना शोधा...", govAll: "सर्व", govCentral: "केंद्र सरकार", govState: "महाराष्ट्र",
+    testsTitle: "स्वयंचलित चाचणी संच", testsDesc: "नियम इंजिनची अचूकता तपासा",
+    runTests: "सर्व चाचण्या चालवा", testsPlaceholder: "चाचण्या चालवण्यासाठी क्लिक करा",
+    ELIGIBLE: "पात्र", INELIGIBLE: "अपात्र", UNKNOWN: "कागदपत्रे आवश्यक",
+    eligible_label: "पात्र", ineligible_label: "अपात्र", unknown_label: "कागदपत्रे अनुपलब्ध",
+    benefitLabel: "अंदाजित लाभ:", nearMissLabel: "जवळ-चुकणे:",
+    missingDocsTitle: "अनुपलब्ध कागदपत्रे रोडमॅप",
+    portal: "पोर्टल", cost: "खर्च", timeline: "कालावधी",
+    sourceTitle: "अधिकृत स्रोत", applyNow: "आता अर्ज करा",
+    consentError: "कृपया संमती चेकबॉक्स तपासा.",
+    checking: "पात्रता तपासत आहे...",
+    footerNote: "नियम अधिकृत योजना मार्गदर्शक तत्त्वांवर आधारित आहेत.",
+    schemeCard_eligible: "पात्र", schemeCard_unknown: "कागदपत्रे तपासा", schemeCard_ineligible: "अपात्र",
+  }
+};
+
+let LANG = 'en', LAST_RESULTS = null, SCHEMES_DATA = null, QUIZ_ANSWERS = {}, QUIZ_STEP = 0, GOV_FILTER = 'all';
+const t = (k) => (TRANSLATIONS[LANG] && TRANSLATIONS[LANG][k]) || TRANSLATIONS.en[k] || k;
+const $ = (id) => document.getElementById(id);
+const esc = (s) => String(s ?? '').replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const inr = (n) => n != null ? '\u20B9' + Number(n).toLocaleString('en-IN') : '';
+
+function applyTranslations() {
+  document.querySelectorAll('[data-i]').forEach(el => { el.textContent = t(el.dataset.i); });
+  document.querySelectorAll('[data-i-ph]').forEach(el => { el.placeholder = t(el.dataset.iPh); });
+  document.querySelectorAll('[data-i-opt]').forEach(el => { el.textContent = t(el.dataset.iOpt); });
+  document.title = 'KisanSahay \u2013 ' + t('heroTitle');
+  if (LAST_RESULTS) renderResults(LAST_RESULTS);
+}
+
+function setLang(lang) {
+  LANG = lang;
+  document.documentElement.lang = lang === 'en' ? 'en' : lang === 'hi' ? 'hi' : 'mr';
+  applyTranslations();
+  if (SCHEMES_DATA) renderSchemesGrid(SCHEMES_DATA, '', GOV_FILTER);
+  if (QUIZ_STEP > 0) renderQuizStep();
+}
+
+function showTab(name) {
+  ['check','quiz','schemes','tests'].forEach(n => {
+    const panel = $('tab-' + n + '-panel');
+    if (panel) panel.classList.toggle('hidden', n !== name);
+  });
+  document.querySelectorAll('.tab-btn, .tab-btn-m').forEach(b => {
+    const isActive = b.getAttribute('onclick') === ("showTab('" + name + "')");
+    b.classList.toggle('tab-active', isActive);
+    b.classList.toggle('text-gray-400', !isActive);
+    b.classList.toggle('text-white', isActive);
+  });
+  if (name === 'schemes' && !SCHEMES_DATA) loadSchemesData();
+  if (name === 'quiz' && QUIZ_STEP === 0) startQuiz();
+}
+
+function maskAadhaarInput(input) {
+  const digits = input.value.replace(/\D/g,'').slice(0,12);
+  input.dataset.raw = digits;
+  if (digits.length >= 8) {
+    input.value = 'XXXX XXXX ' + digits.slice(8);
+  }
+}
+
+const DEMOS = {
+  1: { full_name:'Ramesh Patil', occupation:'farmer', annual_income:'1.5 lakh', land_holding:'1.2 hectares', is_taxpayer:'no', aadhaar:'9876', age:'45', caste_category:'general' },
+  2: { full_name:'Sunita Jadhav', occupation:'farmer', annual_income:'1.2 lakh', land_holding:'', is_taxpayer:'no', aadhaar:'5432', age:'38', caste_category:'obc' },
+  3: { full_name:'Anil Kale', occupation:'farmer', annual_income:'8.2 lakh', land_holding:'2.5 hectares', is_taxpayer:'yes', aadhaar:'1234', age:'52', caste_category:'general' },
+};
+
+function loadDemo(n) {
+  const d = DEMOS[n];
+  Object.entries(d).forEach(([k,v]) => { const el = $(k); if (el) el.value = v; });
+  $('consent').checked = true;
+  checkEligibility();
+}
+
+function parseCurrency(raw) {
+  if (!raw) return null;
+  raw = raw.toLowerCase().replace(/,/g,'').trim();
+  const m = raw.match(/(\d+(?:\.\d+)?)\s*(lakh|lac|l)?/);
+  if (!m) return null;
+  return parseFloat(m[1]) * (m[2] ? 100000 : 1);
+}
+
+function parseLand(raw) {
+  if (!raw) return null;
+  raw = raw.toLowerCase().replace(/,/g,'').trim();
+  const mAcre = raw.match(/(\d+(?:\.\d+)?)\s*acre/);
+  if (mAcre) return parseFloat(mAcre[1]) * 0.404686;
+  const m = raw.match(/(\d+(?:\.\d+)?)/);
+  return m ? parseFloat(m[1]) : null;
+}
+
+function parseYesNo(raw) {
+  if (!raw) return null;
+  const v = raw.toLowerCase().trim();
+  if (['yes','y','true','1'].includes(v)) return true;
+  if (['no','n','false','0'].includes(v)) return false;
+  return null;
+}
+
+// ── DETERMINISTIC RULE ENGINE ──────────────────────────────────────────────
+const OPS = { '>': (a,b)=>a>b, '>=': (a,b)=>a>=b, '<': (a,b)=>a<b, '<=': (a,b)=>a<=b, '==': (a,b)=>a==b, '!=': (a,b)=>a!=b };
+
+function computeGap(req, val) {
+  if (typeof val === 'boolean' || typeof val !== 'number') return null;
+  const d = val - req.value;
+  if ((req.operator==='<' || req.operator==='<=') && d>0) return parseFloat(d.toFixed(2));
+  if ((req.operator==='>' || req.operator==='>=') && d<0) return parseFloat((-d).toFixed(2));
+  return null;
+}
+
+function evalReq(req, profile) {
+  const val = profile[req.field];
+  const base = { id:req.id, rule:req.label, field:req.field, operator:req.operator, limit:req.value, applicant_value:val, doc_label:req.doc_label, doc_cost:req.doc_cost, doc_days:req.doc_days, portal:req.portal };
+  if (val === undefined || val === null) {
+    return { ...base, result:'UNKNOWN', missing_document:req.doc_label, why_required:req.why_required, reason:"Cannot verify '" + req.label + "' - document not provided.", gap:null };
+  }
+  if (!OPS[req.operator]) return { ...base, result:'UNKNOWN', reason:'Unknown operator', gap:null };
+  const ok = OPS[req.operator](val, req.value);
+  return { ...base, result: ok ? 'PASS' : 'FAIL', gap: ok ? null : computeGap(req, val) };
+}
+
+function computeBenefit(b, status, landHolding) {
+  if (status !== 'ELIGIBLE') return null;
+  if (b.type === 'fixed') return { label:'Estimated annual benefit', type:b.type, amount:b.amount, frequency:b.period, estimated_annual:b.amount, description:b.description };
+  if (b.type === 'fixed_per_hectare' && landHolding) return { label:'Estimated annual (per hectare)', type:b.type, amount:b.amount, frequency:b.period, estimated_annual:parseFloat((b.amount*landHolding).toFixed(2)), description:b.description };
+  return { label:'Benefit available', type:b.type, amount:b.amount, frequency:b.period, estimated_annual:null, description:b.description };
+}
+
+function evalScheme(scheme, profile) {
+  const checks = (scheme.requirements || []).map(r => evalReq(r, profile));
+  const fails = checks.filter(c => c.result === 'FAIL');
+  const unknowns = checks.filter(c => c.result === 'UNKNOWN');
+  const status = fails.length ? 'INELIGIBLE' : unknowns.length ? 'UNKNOWN' : 'ELIGIBLE';
+  const missingDocs = [], seen = new Set();
+  unknowns.forEach(c => { if (c.missing_document && !seen.has(c.missing_document)) { missingDocs.push({ doc:c.missing_document, why:c.why_required, portal:c.portal, cost:c.doc_cost, days:c.doc_days }); seen.add(c.missing_document); } });
+  const nearMiss = fails.filter(f=>f.gap!=null).map(f=>({ rule:f.rule, gap:f.gap, applicant_value:f.applicant_value, limit:f.limit, operator:f.operator }));
+  const benefitEst = computeBenefit(scheme.benefit || {}, status, profile.land_holding);
+  return { scheme:scheme.scheme_id, scheme_name:scheme.scheme_name, category:scheme.category, government:scheme.government, status, checks, failed_rules:fails, near_miss:nearMiss, missing_documents:missingDocs, benefit_estimate:benefitEst, portal_links:scheme.portal_links||[], application_cost:scheme.application_cost||0, processing_days:scheme.processing_days, source:{ document:scheme.source_document, section:scheme.source_section, url:scheme.official_url }, tags:scheme.tags||[] };
+}
+
+function evalAll(profile) {
+  if (!SCHEMES_DATA) return [];
+  return SCHEMES_DATA.schemes.map(s => evalScheme(s, profile));
+}
+
+function buildProfile() {
+  const occ = ($('occupation').value || '').toLowerCase();
+  return {
+    full_name: $('full_name').value.trim() || null,
+    occupation: occ,
+    occupation_code: occ.includes('farm') ? 'farmer' : occ,
+    annual_income: parseCurrency($('annual_income').value),
+    land_holding: parseLand($('land_holding').value),
+    is_taxpayer: parseYesNo($('is_taxpayer').value),
+    age: parseInt($('age').value) || null,
+    caste_category: $('caste_category').value || null,
+  };
+}
+
+function summaryStats(results) {
+  const eligible = results.filter(r => r.status === 'ELIGIBLE');
+  const unknown = results.filter(r => r.status === 'UNKNOWN');
+  const ineligible = results.filter(r => r.status === 'INELIGIBLE');
+  const totalBenefit = eligible.reduce((s,r) => s + ((r.benefit_estimate && r.benefit_estimate.estimated_annual) || 0), 0);
+  return { total:results.length, eligible:eligible.length, unknown:unknown.length, ineligible:ineligible.length, total_benefit:totalBenefit, eligible_list:eligible };
+}
+
+async function checkEligibility() {
+  if (!$('consent').checked) { showError(t('consentError')); return; }
+  hideError();
+  const btn = $('check-btn');
+  const btnIcon = $('check-btn-icon');
+  const btnText = btn.querySelector('[data-i]');
+  btn.disabled = true;
+  if (btnIcon) btnIcon.textContent = '⏳';
+  if (btnText) btnText.textContent = t('checking');
+  const rp = $('results-panel');
+  if (rp) rp.classList.add('hidden');
+  if (!SCHEMES_DATA) await loadSchemesData();
+  await new Promise(r => setTimeout(r, 600));
+  const profile = buildProfile();
+  const results = evalAll(profile);
+  const stats = summaryStats(results);
+  LAST_RESULTS = { profile, results, summary:stats, aadhaar_masked:maskAadhaarDisplay(($('aadhaar').dataset.raw) || $('aadhaar').value) };
+  btn.disabled = false;
+  if (btnIcon) btnIcon.textContent = '🔍';
+  if (btnText) btnText.textContent = t('btnCheck');
+  renderSummaryStats(stats);
+  renderResults(LAST_RESULTS);
+  const pdfBtn = $('pdf-btn');
+  if (pdfBtn) pdfBtn.disabled = false;
+  if (rp) { rp.classList.remove('hidden'); rp.scrollIntoView({ behavior:'smooth', block:'start' }); }
+}
+
+function maskAadhaarDisplay(raw) {
+  if (!raw) return null;
+  const d = String(raw).replace(/\D/g,'');
+  if (d.length < 4) return null;
+  return 'XXXX XXXX ' + d.slice(-4);
+}
+
+function renderSummaryStats(stats) {
+  const placeholder = $('summary-placeholder');
+  const panel = $('summary-stats');
+  if (!placeholder || !panel) return;
+  placeholder.classList.add('hidden');
+  panel.classList.remove('hidden');
+  panel.innerHTML = '<div class="grid grid-cols-3 gap-2 mb-3">' +
+    '<div class="glass rounded-xl p-3 text-center eligible-glow"><div class="text-2xl font-bold text-leaf-400">' + stats.eligible + '</div><div class="text-xs text-gray-500 mt-0.5">' + esc(t('eligible_label')) + '</div></div>' +
+    '<div class="glass rounded-xl p-3 text-center unknown-glow"><div class="text-2xl font-bold text-amber-400">' + stats.unknown + '</div><div class="text-xs text-gray-500 mt-0.5">' + esc(t('unknown_label')) + '</div></div>' +
+    '<div class="glass rounded-xl p-3 text-center ineligible-glow"><div class="text-2xl font-bold text-crimson-400">' + stats.ineligible + '</div><div class="text-xs text-gray-500 mt-0.5">' + esc(t('ineligible_label')) + '</div></div>' +
+    '</div>' +
+    (stats.total_benefit > 0 ? '<div class="glass rounded-xl p-3 eligible-glow mb-3"><div class="text-xs text-gray-400 mb-1">Total Estimated Annual Benefit</div><div class="text-xl font-bold text-leaf-400">' + inr(stats.total_benefit) + '</div><div class="text-xs text-gray-600">Eligible fixed-benefit schemes</div></div>' : '') +
+    '<div class="space-y-1.5 max-h-48 overflow-y-auto pr-1">' +
+    stats.eligible_list.map(r => '<div class="flex items-center justify-between glass rounded-lg px-2.5 py-1.5 text-xs"><span class="text-gray-300 truncate mr-2">' + esc(r.scheme_name.split('(')[0].trim()) + '</span><span class="text-leaf-400 flex-shrink-0">' + (r.benefit_estimate && r.benefit_estimate.estimated_annual ? inr(r.benefit_estimate.estimated_annual) + '/yr' : 'Eligible') + '</span></div>').join('') +
+    '</div>';
+}
+
+function renderResults(data) {
+  const { profile, results, summary, aadhaar_masked } = data;
+  const panel = $('results-panel');
+  if (!panel) return;
+  const sorted = [...results].sort((a,b) => ({ELIGIBLE:0,UNKNOWN:1,INELIGIBLE:2}[a.status] - {ELIGIBLE:0,UNKNOWN:1,INELIGIBLE:2}[b.status]));
+  panel.innerHTML =
+    (aadhaar_masked ? '<div class="flex items-center gap-2 mb-4 glass-card px-4 py-2.5 text-sm"><span class="text-gray-500">Aadhaar:</span><span class="font-mono text-leaf-400">' + esc(aadhaar_masked) + '</span><span class="text-xs text-gray-600 ml-auto">DPDP masked</span></div>' : '') +
+    '<div class="flex gap-2 mb-5 flex-wrap no-print">' +
+    '<button onclick="filterResults(\'ALL\')" class="result-filter-btn glass border border-leaf-500/30 text-leaf-400 px-3 py-1.5 rounded-xl text-xs font-medium">All (' + results.length + ')</button>' +
+    '<button onclick="filterResults(\'ELIGIBLE\')" class="result-filter-btn glass border border-gray-700 text-gray-400 px-3 py-1.5 rounded-xl text-xs font-medium">Eligible (' + summary.eligible + ')</button>' +
+    '<button onclick="filterResults(\'UNKNOWN\')" class="result-filter-btn glass border border-gray-700 text-gray-400 px-3 py-1.5 rounded-xl text-xs font-medium">Needs Docs (' + summary.unknown + ')</button>' +
+    '<button onclick="filterResults(\'INELIGIBLE\')" class="result-filter-btn glass border border-gray-700 text-gray-400 px-3 py-1.5 rounded-xl text-xs font-medium">Not Eligible (' + summary.ineligible + ')</button>' +
+    '</div>' +
+    '<div id="results-cards" class="space-y-4">' + sorted.map(r => renderSchemeCard(r, profile)).join('') + '</div>';
+}
+
+function filterResults(status) {
+  document.querySelectorAll('.result-card').forEach(c => { c.style.display = (status === 'ALL' || c.dataset.status === status) ? '' : 'none'; });
+}
+
+function getCategoryEmoji(cat) {
+  const map = {'Direct Income Support':'💵','Crop Insurance':'🌦','Agricultural Credit':'🏦','Water Conservation':'💧','Horticulture':'🍊','Renewable Energy':'☀️','Accident Insurance':'🛡','Debt Relief':'📉','Market Access':'📈','Micro-Irrigation':'💦','SC/ST Farmer Support':'⚖️','Organic Farming':'🌿','Post-Harvest Infrastructure':'🏭','Farm Mechanization':'🚜','Soil Testing':'🧪','Food Processing':'🍅','Precision Agriculture':'🚁','Agro-Processing Finance':'💼'};
+  return map[cat] || '🌾';
+}
+
+function generateExplanation(r, profile) {
+  const name = profile.full_name || 'Applicant';
+  const scheme = r.scheme_name;
+  if (r.status === 'ELIGIBLE') {
+    const b = r.benefit_estimate;
+    const desc = b ? (b.description || '') : '';
+    const msgs = { en: 'Good news! ' + name + ' qualifies for ' + scheme + '. ' + desc + '. All eligibility conditions are satisfied.', hi: 'खुशखबरी! ' + name + ' ' + scheme + ' के लिए पात्र हैं। ' + desc + '।', mr: 'आनंदाची बातमी! ' + name + ' ' + scheme + ' साठी पात्र आहेत. ' + desc + '.' };
+    return msgs[LANG] || msgs.en;
+  }
+  if (r.status === 'INELIGIBLE') {
+    const fails = r.failed_rules.slice(0,2).map(f => { const gap = f.gap != null ? ' (gap: ' + inr(f.gap) + ')' : ''; return f.rule + gap; }).join('; ');
+    const msgs = { en: 'Unfortunately, ' + name + ' does not meet the criteria for ' + scheme + '. Reason: ' + (fails || 'Conditions not met') + '.', hi: 'दुर्भाग्यवश, ' + name + ' ' + scheme + ' के लिए पात्र नहीं हैं। कारण: ' + fails + '।', mr: 'दुर्दैवाने, ' + name + ' ' + scheme + ' साठी पात्र नाहीत. कारण: ' + fails + '.' };
+    return msgs[LANG] || msgs.en;
+  }
+  const docs = r.missing_documents.slice(0,2).map(d=>d.doc).join(', ');
+  const msgs = { en: 'Eligibility for ' + scheme + ' cannot be confirmed yet. Missing: ' + docs + '. This is NOT a rejection - gather these documents and re-apply.', hi: scheme + ' में पात्रता अभी निश्चित नहीं। अनुपलब्ध: ' + docs + '। यह अस्वीकृति नहीं है।', mr: scheme + ' साठी पात्रता अद्याप निश्चित नाही. अनुपलब्ध: ' + docs + '. हे नकार नाही.' };
+  return msgs[LANG] || msgs.en;
+}
+
+function renderSchemeCard(r, profile) {
+  const isEligible = r.status === 'ELIGIBLE', isUnknown = r.status === 'UNKNOWN';
+  const colorClass = isEligible ? 'eligible-glow' : isUnknown ? 'unknown-glow' : 'ineligible-glow';
+  const chipClass = isEligible ? 'bg-leaf-500/15 text-leaf-400 border border-leaf-500/30' : isUnknown ? 'bg-amber-500/15 text-amber-400 border border-amber-500/30' : 'bg-crimson-500/15 text-crimson-400 border border-crimson-500/30';
+  const chipLabel = isEligible ? ('Eligible') : isUnknown ? ('Needs Docs') : ('Not Eligible');
+  const emoji = getCategoryEmoji(r.category);
+  const govBadge = (r.government||'').includes('Maharashtra') ? 'Maharashtra' : (r.government||'').includes('Central') ? 'Central Govt' : (r.government||'');
+
+  let html = '<div class="glass-card p-5 card-hover ' + colorClass + ' result-card animate-slide-up" data-status="' + r.status + '" id="card-' + r.scheme + '">';
+  html += '<div class="flex items-start justify-between gap-3 mb-3"><div class="flex items-start gap-3"><div class="text-2xl flex-shrink-0">' + emoji + '</div>';
+  html += '<div><h3 class="font-bold text-white text-sm leading-snug">' + esc(r.scheme_name) + '</h3>';
+  html += '<div class="flex items-center gap-2 mt-1"><span class="text-xs text-gray-500">' + esc(govBadge) + '</span>';
+  if (r.category) html += '<span class="glass text-xs text-gray-500 px-2 py-0.5 rounded">' + esc(r.category) + '</span>';
+  html += '</div></div></div><div class="flex-shrink-0"><span class="px-3 py-1 rounded-full text-xs font-bold ' + chipClass + '">' + chipLabel + '</span></div></div>';
+
+  // Explanation
+  html += '<div class="glass rounded-xl p-3 mb-3 text-sm text-gray-300 leading-relaxed">' + esc(generateExplanation(r, profile)) + '</div>';
+
+  // Benefit
+  if (r.benefit_estimate) {
+    html += '<div class="flex items-center gap-2 mb-3 p-2.5 rounded-xl bg-leaf-500/8 border border-leaf-500/20"><span class="text-lg">💰</span><div class="flex-1"><div class="text-xs text-gray-400">' + t('benefitLabel') + '</div><div class="text-sm font-bold text-leaf-400">' + (r.benefit_estimate.estimated_annual ? inr(r.benefit_estimate.estimated_annual) + ' / ' + esc(r.benefit_estimate.frequency||'year') : esc(r.benefit_estimate.description||'')) + '</div></div></div>';
+  }
+
+  // Near-miss
+  if (r.near_miss && r.near_miss.length) {
+    html += '<div class="mb-3 space-y-1.5"><div class="text-xs text-crimson-400 font-medium">' + t('nearMissLabel') + '</div>';
+    r.near_miss.forEach(nm => {
+      html += '<div class="glass rounded-lg px-3 py-2 flex items-center gap-2 text-xs"><span class="text-crimson-400">Up</span><span class="text-gray-300">' + esc(nm.rule) + ':</span><span class="text-crimson-400 font-bold">' + inr(nm.gap) + ' over limit</span><span class="text-gray-600">(yours: ' + (nm.applicant_value!=null?inr(nm.applicant_value):'N/A') + ' vs limit: ' + inr(nm.limit) + ')</span></div>';
+    });
+    html += '</div>';
+  }
+
+  // Rule checks (collapsible)
+  html += '<details class="mb-3"><summary class="text-xs text-gray-500 cursor-pointer hover:text-gray-300 transition-colors">Rule checks (' + r.checks.length + ')</summary><div class="mt-2 space-y-1.5">';
+  r.checks.forEach(c => {
+    const icon = c.result==='PASS' ? 'PASS' : c.result==='FAIL' ? 'FAIL' : 'UNKNOWN';
+    const textClass = c.result==='PASS' ? 'text-leaf-400' : c.result==='FAIL' ? 'text-crimson-400' : 'text-amber-400';
+    html += '<div class="glass rounded-lg px-3 py-2 text-xs"><div class="flex items-center gap-2"><span class="font-medium text-gray-300">' + esc(c.rule) + '</span><span class="' + textClass + ' ml-auto font-medium">' + icon + '</span></div>';
+    if (c.result !== 'PASS') html += '<div class="text-gray-500 mt-0.5">' + esc(c.reason || ('Applicant: ' + c.applicant_value + ' / Rule: ' + c.operator + ' ' + c.limit)) + (c.gap != null ? ' | Diff: ' + inr(c.gap) : '') + '</div>';
+    html += '</div>';
+  });
+  html += '</div></details>';
+
+  // Missing docs roadmap
+  if (r.missing_documents && r.missing_documents.length) {
+    html += '<div class="mb-3"><div class="text-xs font-medium text-amber-400 mb-2">' + t('missingDocsTitle') + '</div><div class="space-y-2">';
+    r.missing_documents.forEach(d => {
+      html += '<div class="glass rounded-xl p-3 border border-amber-500/20"><div class="font-medium text-gray-300 text-xs mb-1.5">' + esc(d.doc) + '</div><div class="text-xs text-gray-500 mb-2">' + esc(d.why) + '</div><div class="flex items-center gap-4 text-xs">';
+      if (d.portal) html += '<a href="' + esc(d.portal) + '" target="_blank" class="text-sky-400 hover:text-sky-300 transition-colors">' + t('portal') + '</a>';
+      if (d.cost != null) html += '<span class="text-gray-500">' + (d.cost===0?'Free':inr(d.cost)) + '</span>';
+      if (d.days != null) html += '<span class="text-gray-500">' + d.days + ' day' + (d.days!==1?'s':'') + '</span>';
+      html += '</div></div>';
+    });
+    html += '</div></div>';
+  }
+
+  // Source + apply
+  html += '<div class="flex items-center justify-between gap-3 pt-3 border-t border-white/5 flex-wrap"><details><summary class="text-xs text-gray-600 cursor-pointer hover:text-gray-400 transition-colors">' + t('sourceTitle') + '</summary><div class="mt-1.5 text-xs text-gray-600 leading-relaxed"><div>' + esc(r.source.document||'') + '</div><div class="italic mt-0.5">' + esc(r.source.section||'') + '</div></div></details>';
+  if (r.source.url) html += '<a href="' + esc(r.source.url) + '" target="_blank" class="glass border border-leaf-500/30 text-leaf-400 hover:bg-leaf-500/10 px-4 py-1.5 rounded-lg text-xs font-bold transition-all">' + t('applyNow') + '</a>';
+  html += '</div></div>';
+  return html;
+}
+
+function showError(msg) { const el = $('err-msg'); if(el){el.textContent=msg;el.classList.remove('hidden');} }
+function hideError() { const el = $('err-msg'); if(el) el.classList.add('hidden'); }
+
+// Voice input
+let recognition = null;
+function startVoice() {
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!SR) { showVoiceStatus('Voice input not supported. Please type.'); return; }
+  if (recognition) { recognition.stop(); return; }
+  recognition = new SR();
+  recognition.lang = { en:'en-IN', hi:'hi-IN', mr:'mr-IN' }[LANG] || 'en-IN';
+  recognition.continuous = false;
+  recognition.interimResults = true;
+  const vb = $('voice-btn');
+  if(vb) vb.classList.add('voice-btn-active');
+  showVoiceStatus('Listening... Speak your name');
+  recognition.onresult = (e) => { const transcript = Array.from(e.results).map(r=>r[0].transcript).join(''); const fn = $('full_name'); if(fn) fn.value = transcript; if(e.results[0].isFinal) stopVoice(); };
+  recognition.onerror = () => { showVoiceStatus('Could not hear you. Please type.'); stopVoice(); };
+  recognition.onend = () => stopVoice();
+  recognition.start();
+}
+function stopVoice() { const vb=$('voice-btn'); if(vb) vb.classList.remove('voice-btn-active'); if(recognition){try{recognition.stop();}catch(e){} recognition=null;} setTimeout(()=>{const vs=$('voice-status');if(vs)vs.classList.add('hidden');},3000); }
+function showVoiceStatus(msg) { const el=$('voice-status'); if(el){el.textContent=msg;el.classList.remove('hidden');} }
+
+// File upload
+function handleFileUpload(file) {
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    const text = e.target.result;
+    const fields = extractFieldsFromText(text);
+    const blurAlert = $('blur-alert');
+    if (blurAlert) { if(file.size<20000&&file.type.startsWith('image/')){blurAlert.querySelector('span:last-child').textContent='Image appears low-resolution. Please re-upload a clearer scan.';blurAlert.classList.remove('hidden');}else{blurAlert.classList.add('hidden');} }
+    renderExtractedFields(fields);
+  };
+  reader.readAsText(file);
+}
+
+function extractFieldsFromText(text) {
+  const fields = {};
+  const patterns = [
+    { field:'full_name', pats:[/(?:name|[\u0928\u093E\u092E]|[\u0928\u093E\u0935])[:\s]+([A-Za-z\u0900-\u097F ]{3,50})/i] },
+    { field:'annual_income', pats:[/(?:income|[\u0906\u092F]|[\u0909\u0924\u094D\u092A\u0928\u094D\u0928])[:\s]*(?:rs\.?|[\u20B9])?\s*([\d,]+(?:\s*lakh)?)/i, /(?:rs\.?|[\u20B9])\s*([\d,]+)/i] },
+    { field:'land_holding', pats:[/(?:land|area|[\u091C\u092E\u0940\u0928])[:\s]*([\d.]+)\s*(?:hectare|ha|acre)?/i, /([\d.]+)\s*hectare/i] },
+    { field:'is_taxpayer', pats:[/(?:income.?tax|taxpayer)[:\s]*(yes|no)/i] },
+  ];
+  for (const { field, pats } of patterns) {
+    for (const pat of pats) {
+      const m = text.match(pat);
+      if (m) { fields[field] = { raw:m[1].trim(), confidence:0.82 }; break; }
+    }
+  }
+  return fields;
+}
+
+function renderExtractedFields(fields) {
+  const keys = Object.keys(fields);
+  const panel = $('extracted-fields'), body = $('extracted-body');
+  if (!panel || !body) return;
+  if (!keys.length) { panel.classList.add('hidden'); showError('Could not extract fields. Please enter manually.'); return; }
+  body.innerHTML = keys.map(k => '<div><label class="block text-xs text-gray-500 mb-1">' + esc(k.replace(/_/g,' ')) + ' <span class="text-leaf-400">(' + Math.round(fields[k].confidence*100) + '% confidence)</span></label><input data-field="' + esc(k) + '" value="' + esc(fields[k].raw) + '" class="w-full bg-gray-900/80 border border-gray-700 focus:border-leaf-500 rounded-xl px-3 py-2 text-sm text-white outline-none transition-colors"></div>').join('');
+  panel.classList.remove('hidden');
+}
+
+function confirmExtracted() {
+  document.querySelectorAll('#extracted-body input').forEach(input => { const el=$(input.dataset.field); if(el) el.value=input.value; });
+  const ef=$('extracted-fields'); if(ef) ef.innerHTML='<div class="text-leaf-400 text-sm">Fields confirmed.</div>';
+  checkEligibility();
+}
+
+function useSampleDoc() { const t='Name: Ramesh Patil\nLand: 1.2 hectares\nIncome: Rs. 150000 per year\nTax: no'; renderExtractedFields(extractFieldsFromText(t)); }
+function useSampleDoc2() { const t='Income Certificate\nName: Sunita Jadhav\nAnnual Income: Rs. 120000\nOccupation: Farmer'; renderExtractedFields(extractFieldsFromText(t)); }
+
+// Schemes grid
+async function loadSchemesData() {
+  try { const res = await fetch('schemes.json'); SCHEMES_DATA = await res.json(); }
+  catch(e) { console.warn('Could not load schemes.json, using fallback'); SCHEMES_DATA = { schemes: [{ scheme_id:'PM-KISAN', scheme_name:'PM-KISAN', category:'Direct Income Support', government:'Central', source_document:'PM-KISAN Guidelines', source_section:'Section 3', official_url:'https://pmkisan.gov.in', portal_links:[{name:'PM-KISAN',url:'https://pmkisan.gov.in'}], application_cost:0, processing_days:30, requirements:[{id:'land',label:'Land ownership',field:'land_holding',operator:'>',value:0,doc_label:'7/12 Extract',why_required:'Landowning farmers only',portal:'https://mahabhulekh.maharashtra.gov.in',doc_cost:15,doc_days:1},{id:'tax',label:'Non-taxpayer',field:'is_taxpayer',operator:'==',value:false,doc_label:'Self-declaration',why_required:'ITR payers excluded',portal:'https://incometax.gov.in',doc_cost:0,doc_days:1}], benefit:{type:'fixed',amount:6000,period:'annual',description:'Rs 6000/year'}, relevance:{occupations:['farmer']}, tags:['income_support'] }] }; }
+}
+
+function renderSchemesGrid(data, search, govFilter) {
+  const grid = $('schemes-grid');
+  if (!data || !data.schemes || !grid) return;
+  const filtered = data.schemes.filter(s => { const ms = !search || s.scheme_name.toLowerCase().includes(search.toLowerCase()) || (s.category||'').toLowerCase().includes(search.toLowerCase()); const mg = govFilter==='all' || (s.government||'').includes(govFilter); return ms && mg; });
+  grid.innerHTML = filtered.map(s => {
+    const emoji = getCategoryEmoji(s.category);
+    const govBadge = (s.government||'').includes('Maharashtra') ? 'MH' : 'Central';
+    const benefit = (s.benefit && s.benefit.description) || 'See scheme details';
+    return '<div class="glass-card p-4 card-hover cursor-pointer"><div class="flex items-start justify-between mb-2"><span class="text-2xl">' + emoji + '</span><span class="text-xs glass px-2 py-0.5 rounded text-gray-400">' + govBadge + '</span></div><h3 class="font-bold text-white text-sm leading-snug mb-1">' + esc(s.scheme_name) + '</h3><div class="text-xs text-gray-500 mb-2">' + esc(s.category||'') + '</div><div class="text-xs text-leaf-400 leading-relaxed">' + esc(benefit.substring(0,80)) + (benefit.length>80?'...':'') + '</div>' + (s.application_cost===0?'<div class="mt-2 text-xs text-leaf-600 font-medium">Free to apply</div>':'') + '<div class="mt-2 flex gap-1 flex-wrap">' + (s.tags||[]).slice(0,3).map(tag=>'<span class="glass text-xs px-1.5 py-0.5 rounded text-gray-600">'+esc(tag)+'</span>').join('') + '</div></div>';
+  }).join('');
+}
+
+function filterSchemes(search) { if(SCHEMES_DATA) renderSchemesGrid(SCHEMES_DATA, search, GOV_FILTER); }
+function filterSchemesByGov(gov) { GOV_FILTER=gov; filterSchemes(($('scheme-search')||{}).value||''); }
+
+// Quiz
+const QUIZ_QUESTIONS = [
+  { id:'occupation', q:{ en:'What is your primary occupation?', hi:'आपका मुख्य व्यवसाय क्या है?', mr:'तुमचा मुख्य व्यवसाय काय आहे?' }, options:[{v:'farmer',l:{en:'Farmer',hi:'किसान',mr:'शेतकरी'}},{v:'laborer',l:{en:'Agricultural Laborer',hi:'कृषि मजदूर',mr:'शेतमजूर'}},{v:'business',l:{en:'Business/Self-employed',hi:'व्यापार',mr:'व्यापार'}},{v:'other',l:{en:'Other',hi:'अन्य',mr:'इतर'}}] },
+  { id:'land_size', q:{ en:'Do you own agricultural land?', hi:'क्या आपके पास कृषि भूमि है?', mr:'तुमच्याकडे शेतजमीन आहे का?' }, options:[{v:'2',l:{en:'Yes, 2+ hectares',hi:'हाँ, 2+ हेक्टेयर',mr:'होय, 2+ हेक्टर'}},{v:'1',l:{en:'Yes, 1-2 hectares',hi:'हाँ, 1-2 हेक्टेयर',mr:'होय, 1-2 हेक्टर'}},{v:'0.5',l:{en:'Yes, less than 1 hectare',hi:'हाँ, 1 हेक्टेयर से कम',mr:'होय, 1 हेक्टरपेक्षा कमी'}},{v:'0',l:{en:'No land',hi:'जमीन नहीं',mr:'जमीन नाही'}}] },
+  { id:'income_range', q:{ en:'Approximate annual household income?', hi:'अनुमानित वार्षिक पारिवारिक आय?', mr:'अंदाजे वार्षिक कुटुंब उत्पन्न?' }, options:[{v:'60000',l:{en:'Under Rs 60,000',hi:'Rs 60,000 से कम',mr:'Rs 60,000 पेक्षा कमी'}},{v:'150000',l:{en:'Rs 60k - Rs 1.5 lakh',hi:'Rs 60k - Rs 1.5 लाख',mr:'Rs 60k - Rs 1.5 लाख'}},{v:'300000',l:{en:'Rs 1.5 - Rs 3 lakh',hi:'Rs 1.5 - Rs 3 लाख',mr:'Rs 1.5 - Rs 3 लाख'}},{v:'800000',l:{en:'Above Rs 3 lakh',hi:'Rs 3 लाख से अधिक',mr:'Rs 3 लाखापेक्षा जास्त'}}] },
+  { id:'taxpayer', q:{ en:'Do you pay income tax?', hi:'क्या आप आयकर देते हैं?', mr:'तुम्ही आयकर भरता का?' }, options:[{v:'no',l:{en:'No',hi:'नहीं',mr:'नाही'}},{v:'yes',l:{en:'Yes',hi:'हाँ',mr:'होय'}}] },
+  { id:'caste', q:{ en:'Caste category (optional)?', hi:'जाति श्रेणी (वैकल्पिक)?', mr:'जात श्रेणी (ऐच्छिक)?' }, options:[{v:'general',l:{en:'General',hi:'सामान्य',mr:'सामान्य'}},{v:'obc',l:{en:'OBC',hi:'OBC',mr:'OBC'}},{v:'sc_st',l:{en:'SC/ST',hi:'SC/ST',mr:'SC/ST'}},{v:'',l:{en:'Prefer not to say',hi:'बताना नहीं चाहता',mr:'सांगणे पसंत नाही'}}] },
+  { id:'age_range', q:{ en:'Approximate age?', hi:'अनुमानित आयु?', mr:'अंदाजे वय?' }, options:[{v:'25',l:{en:'Under 30',hi:'30 से कम',mr:'30 पेक्षा कमी'}},{v:'40',l:{en:'30-50',hi:'30-50',mr:'30-50'}},{v:'60',l:{en:'50-75',hi:'50-75',mr:'50-75'}},{v:'80',l:{en:'Above 75',hi:'75 से अधिक',mr:'75 पेक्षा जास्त'}}] },
+];
+
+function startQuiz() { QUIZ_STEP=0; QUIZ_ANSWERS={}; renderQuizStep(); }
+
+function renderQuizStep() {
+  const total = QUIZ_QUESTIONS.length;
+  if (QUIZ_STEP >= total) { renderQuizResult(); return; }
+  const q = QUIZ_QUESTIONS[QUIZ_STEP];
+  const pct = Math.round((QUIZ_STEP/total)*100);
+  const sl=$('quiz-step-label'), qp=$('quiz-pct'), qb=$('quiz-progress-bar'), qa=$('quiz-area');
+  if(sl) sl.textContent='Question '+(QUIZ_STEP+1)+' of '+total;
+  if(qp) qp.textContent=pct+'%';
+  if(qb) qb.style.width=pct+'%';
+  if(!qa) return;
+  qa.innerHTML='<div class="text-center mb-6"><div class="text-lg font-bold text-white mb-1">'+esc(q.q[LANG]||q.q.en)+'</div></div><div class="grid sm:grid-cols-2 gap-3">'+q.options.map(o=>'<button onclick="answerQuiz(\''+esc(q.id)+'\',\''+esc(o.v)+'\')" class="glass border '+(QUIZ_ANSWERS[q.id]===o.v?'border-leaf-500 bg-leaf-500/10 text-white':'border-gray-700 hover:border-leaf-500 hover:bg-leaf-500/10 text-gray-300 hover:text-white')+' rounded-xl p-4 text-left transition-all card-hover text-sm font-medium">'+esc(o.l[LANG]||o.l.en)+'</button>').join('')+'</div>'+(QUIZ_STEP>0?'<button onclick="QUIZ_STEP--;renderQuizStep()" class="mt-4 text-gray-500 text-sm hover:text-gray-300 transition-colors">Back</button>':'');
+}
+
+function answerQuiz(field, value) { QUIZ_ANSWERS[field]=value; QUIZ_STEP++; setTimeout(renderQuizStep,200); }
+
+function renderQuizResult() {
+  const qb=$('quiz-progress-bar'), qp=$('quiz-pct'), sl=$('quiz-step-label'), qa=$('quiz-area');
+  if(qb) qb.style.width='100%'; if(qp) qp.textContent='100%'; if(sl) sl.textContent='Complete!';
+  // Map quiz answers to form fields
+  if(QUIZ_ANSWERS.occupation){ const el=$('occupation'); if(el) el.value=QUIZ_ANSWERS.occupation; }
+  if(QUIZ_ANSWERS.land_size){ const el=$('land_holding'); if(el) el.value=QUIZ_ANSWERS.land_size+' hectares'; }
+  if(QUIZ_ANSWERS.income_range){ const el=$('annual_income'); if(el) el.value=QUIZ_ANSWERS.income_range; }
+  if(QUIZ_ANSWERS.taxpayer){ const el=$('is_taxpayer'); if(el) el.value=QUIZ_ANSWERS.taxpayer; }
+  if(QUIZ_ANSWERS.caste){ const el=$('caste_category'); if(el) el.value=QUIZ_ANSWERS.caste; }
+  if(QUIZ_ANSWERS.age_range){ const el=$('age'); if(el) el.value=QUIZ_ANSWERS.age_range; }
+  const consent=$('consent'); if(consent) consent.checked=true;
+  if(qa) qa.innerHTML='<div class="text-center py-8"><div class="text-5xl mb-4">🎉</div><h3 class="text-xl font-bold text-white mb-2">Quiz Complete!</h3><p class="text-gray-400 text-sm mb-6">Your answers have been filled in. Click below to check eligibility.</p><button onclick="showTab(\'check\');checkEligibility()" class="bg-gradient-to-r from-leaf-600 to-leaf-500 text-white font-bold rounded-xl py-3 px-8 transition-all inline-flex items-center gap-2">Check All 21 Schemes</button><br><button onclick="startQuiz()" class="mt-3 text-gray-500 text-sm hover:text-gray-300 transition-colors">Retake quiz</button></div>';
+}
+
+// Test Suite
+async function runTests() {
+  if(!SCHEMES_DATA) await loadSchemesData();
+  const ri=$('test-run-icon'); if(ri) ri.textContent='⏳';
+  const testCases = [
+    { name:'Clearly eligible farmer', profile:{ occupation:'farmer', occupation_code:'farmer', annual_income:150000, land_holding:1.2, is_taxpayer:false }, sid:'PM-KISAN', expected:'ELIGIBLE' },
+    { name:'Missing land record', profile:{ occupation:'farmer', occupation_code:'farmer', annual_income:150000, land_holding:null, is_taxpayer:false }, sid:'PM-KISAN', expected:'UNKNOWN' },
+    { name:'Income-tax payer excluded', profile:{ occupation:'farmer', occupation_code:'farmer', annual_income:150000, land_holding:1.2, is_taxpayer:true }, sid:'PM-KISAN', expected:'INELIGIBLE' },
+    { name:'High income - MJPKY ineligible', profile:{ occupation:'farmer', occupation_code:'farmer', annual_income:300000, land_holding:1.2, is_taxpayer:false }, sid:'MJPKY', expected:'INELIGIBLE' },
+    { name:'Low income - MJPKY eligible', profile:{ occupation:'farmer', occupation_code:'farmer', annual_income:120000, land_holding:1.2, is_taxpayer:false }, sid:'MJPKY', expected:'ELIGIBLE' },
+    { name:'Small land - farm pond ineligible', profile:{ occupation:'farmer', occupation_code:'farmer', annual_income:100000, land_holding:0.3, is_taxpayer:false }, sid:'SHET-TALE', expected:'INELIGIBLE' },
+    { name:'Adequate land - farm pond eligible', profile:{ occupation:'farmer', occupation_code:'farmer', annual_income:100000, land_holding:1.0, is_taxpayer:false }, sid:'SHET-TALE', expected:'ELIGIBLE' },
+  ];
+  await new Promise(r=>setTimeout(r,400));
+  const results = testCases.map(tc => {
+    const scheme = SCHEMES_DATA.schemes.find(s=>s.scheme_id===tc.sid);
+    if(!scheme) return {...tc, actual:'SCHEME_NOT_FOUND', passed:false};
+    const result = evalScheme(scheme, tc.profile);
+    return {...tc, actual:result.status, passed:result.status===tc.expected, near_miss:result.near_miss};
+  });
+  if(ri) ri.textContent='▶';
+  const passed = results.filter(r=>r.passed).length;
+  const tr=$('test-results');
+  if(!tr) return;
+  tr.innerHTML='<div class="flex items-center justify-between mb-4 glass rounded-xl p-3"><span class="font-bold '+(passed===results.length?'text-leaf-400':'text-amber-400')+'">'+passed+'/'+results.length+' tests passed</span><div class="flex gap-2"><span class="text-leaf-400 text-sm">'+passed+' passed</span><span class="text-crimson-400 text-sm">'+(results.length-passed)+' failed</span></div></div>'+results.map(r=>'<div class="glass rounded-xl p-3 flex items-center gap-3 '+(r.passed?'border-l-2 border-leaf-500':'border-l-2 border-crimson-500')+'"><span class="text-lg flex-shrink-0">'+(r.passed?'✅':'❌')+'</span><div class="flex-1 min-w-0"><div class="text-sm font-medium text-gray-300 truncate">'+esc(r.name)+'</div><div class="text-xs text-gray-600">'+esc(r.sid)+' | Expected: <b>'+r.expected+'</b> | Got: <b class="'+(r.passed?'text-leaf-400':'text-crimson-400')+'">'+r.actual+'</b>'+(r.near_miss&&r.near_miss.length?' | Gap: '+inr(r.near_miss[0].gap):'')+' </div></div></div>').join('');
+}
+
+// PDF Export
+function downloadPDF() {
+  if(!LAST_RESULTS) return;
+  const { profile, results, summary } = LAST_RESULTS;
+  try {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF({ unit:'mm', format:'a4' });
+    let y = 15;
+    doc.setFillColor(15,28,20); doc.rect(0,0,210,30,'F');
+    doc.setTextColor(109,217,160); doc.setFontSize(16); doc.setFont('helvetica','bold');
+    doc.text('KisanSahay - Scheme Eligibility Summary', 10, 13);
+    doc.setFontSize(8); doc.setFont('helvetica','normal'); doc.setTextColor(156,163,175);
+    doc.text('Generated: '+new Date().toLocaleDateString('en-IN')+' | DPDP compliant | Not legal advice', 10, 22);
+    y = 38;
+    doc.setTextColor(30,30,30); doc.setFontSize(11); doc.setFont('helvetica','bold');
+    doc.text('Applicant Profile', 10, y); y+=6;
+    doc.setFontSize(9); doc.setFont('helvetica','normal');
+    doc.text('Name: '+(profile.full_name||'Not provided'), 10, y); y+=5;
+    doc.text('Occupation: '+(profile.occupation||'-')+' | Income: '+(profile.annual_income?'Rs '+(profile.annual_income).toLocaleString('en-IN'):'Not provided')+' | Land: '+(profile.land_holding?profile.land_holding+' ha':'Not provided'), 10, y); y+=8;
+    doc.setFontSize(10); doc.setFont('helvetica','bold');
+    doc.text('Summary: '+summary.eligible+' Eligible | '+summary.unknown+' Need Docs | '+summary.ineligible+' Ineligible', 10, y); y+=5;
+    if(summary.total_benefit){doc.setTextColor(21,128,61);doc.text('Estimated Annual Benefit: Rs '+(summary.total_benefit).toLocaleString('en-IN'),10,y);doc.setTextColor(30,30,30);y+=5;}
+    y+=3;
+    doc.setFillColor(240,250,244);doc.rect(0,y-2,210,5,'F');
+    doc.setFontSize(10);doc.setFont('helvetica','bold');doc.text('Scheme Results',10,y+2);y+=8;
+    results.filter(r=>r.status==='ELIGIBLE').forEach(r=>{
+      if(y>270){doc.addPage();y=15;}
+      doc.setFillColor(236,253,245);doc.rect(8,y-3,194,10,'F');
+      doc.setTextColor(21,128,61);doc.setFontSize(9);doc.setFont('helvetica','bold');
+      doc.text('[ELIGIBLE] '+r.scheme_name.substring(0,60),12,y+2);
+      if(r.benefit_estimate&&r.benefit_estimate.estimated_annual){doc.setFont('helvetica','normal');doc.setTextColor(107,114,128);doc.text('Rs '+(r.benefit_estimate.estimated_annual).toLocaleString('en-IN')+'/yr',150,y+2);}
+      y+=12;
+    });
+    results.filter(r=>r.status==='UNKNOWN').forEach(r=>{
+      if(y>270){doc.addPage();y=15;}
+      doc.setFillColor(255,251,235);doc.rect(8,y-3,194,10,'F');
+      doc.setTextColor(180,120,0);doc.setFontSize(9);doc.setFont('helvetica','bold');
+      doc.text('[NEEDS DOCS] '+r.scheme_name.substring(0,60),12,y+2);y+=12;
+    });
+    doc.setPage(doc.getNumberOfPages());
+    doc.setFontSize(7);doc.setTextColor(156,163,175);
+    doc.text('Apply at: pmkisan.gov.in | mahadbtmahait.gov.in | krishi.maharashtra.gov.in | enam.gov.in',10,288);
+    doc.text('For informational purposes only. Verify eligibility at official sources.',10,292);
+    doc.save('KisanSahay_Eligibility_Summary.pdf');
+  } catch(e) { window.print(); }
+}
+
+// Init
+async function init() {
+  await loadSchemesData();
+  applyTranslations();
+  // Drag and drop support
+  const zone = document.querySelector('.file-upload-zone');
+  if(zone){
+    zone.addEventListener('dragover',e=>{e.preventDefault();zone.classList.add('drag-over');});
+    zone.addEventListener('dragleave',()=>zone.classList.remove('drag-over'));
+    zone.addEventListener('drop',e=>{e.preventDefault();zone.classList.remove('drag-over');const f=e.dataTransfer.files[0];if(f)handleFileUpload(f);});
+  }
+  if('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(()=>{});
+}
+
+document.addEventListener('DOMContentLoaded', init);
+
+</script>
+</body>
+</html>
+
+

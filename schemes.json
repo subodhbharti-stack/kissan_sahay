@@ -1,0 +1,392 @@
+﻿{
+  "dataset_label": "KisanSahay Scheme Rule Dataset v2.0 – 21 Maharashtra/Central Government Agricultural Schemes",
+  "version": "2.0.0",
+  "last_updated": "2026-09-01",
+  "schemes": [
+    {
+      "scheme_id": "PM-KISAN",
+      "scheme_name": "PM-KISAN (Pradhan Mantri Kisan Samman Nidhi)",
+      "category": "Direct Income Support",
+      "government": "Central",
+      "source_document": "PM-KISAN Operational Guidelines, Ministry of Agriculture & Farmers Welfare, GoI",
+      "source_section": "Section 3: Eligibility Criteria – Landowning farmer families",
+      "official_url": "https://pmkisan.gov.in",
+      "portal_links": [{"name": "PM-KISAN Portal", "url": "https://pmkisan.gov.in"},{"name": "Registration", "url": "https://pmkisan.gov.in/RegistrationForm.aspx"}],
+      "application_cost": 0,
+      "processing_days": 30,
+      "requirements": [
+        {"id": "land","label": "Land ownership (any cultivable land)","field": "land_holding","operator": ">","value": 0,"document": "land_record","doc_label": "7/12 Extract (Satbara Utara) or Land Record","why_required": "Scheme targets landowning farmer families; land record is mandatory proof.","portal": "https://mahabhulekh.maharashtra.gov.in","doc_cost": 15,"doc_days": 1},
+        {"id": "tax","label": "Non-income-tax-payer","field": "is_taxpayer","operator": "==","value": false,"document": "tax_status","doc_label": "Self-declaration / ITR Form-16","why_required": "Income-tax payers are excluded per scheme guidelines.","portal": "https://incometax.gov.in","doc_cost": 0,"doc_days": 1}
+      ],
+      "benefit": {"type": "fixed","amount": 6000,"period": "annual","installments": 3,"installment_amount": 2000,"description": "Rs 6,000/year in 3 equal installments of Rs 2,000 via DBT"},
+      "relevance": {"occupations": ["farmer"]},
+      "tags": ["income_support","direct_benefit","central"]
+    },
+    {
+      "scheme_id": "NAMO-SHETKARI",
+      "scheme_name": "Namo Shetkari Maha Sanman Nidhi",
+      "category": "Direct Income Support",
+      "government": "Maharashtra State",
+      "source_document": "Maharashtra Government Resolution, Agriculture Dept., 2023",
+      "source_section": "GR No. SANMAN-2023/CR-84/6A – Eligibility Criteria",
+      "official_url": "https://krishi.maharashtra.gov.in",
+      "portal_links": [{"name": "Maharashtra Krishi Portal", "url": "https://krishi.maharashtra.gov.in"}],
+      "application_cost": 0,
+      "processing_days": 45,
+      "requirements": [
+        {"id": "land","label": "Land ownership in Maharashtra","field": "land_holding","operator": ">","value": 0,"document": "land_record","doc_label": "7/12 Extract (Maharashtra)","why_required": "State scheme; farmer must own land registered in Maharashtra.","portal": "https://mahabhulekh.maharashtra.gov.in","doc_cost": 15,"doc_days": 1},
+        {"id": "tax","label": "Non-income-tax-payer","field": "is_taxpayer","operator": "==","value": false,"document": "tax_status","doc_label": "Self-declaration","why_required": "Income-tax payers are excluded per state guidelines.","portal": "https://krishi.maharashtra.gov.in","doc_cost": 0,"doc_days": 1}
+      ],
+      "benefit": {"type": "fixed","amount": 6000,"period": "annual","installments": 3,"installment_amount": 2000,"description": "Rs 6,000/year in 3 equal installments (complements PM-KISAN for combined Rs 12,000/year)"},
+      "relevance": {"occupations": ["farmer"]},
+      "tags": ["income_support","state","maharashtra"]
+    },
+    {
+      "scheme_id": "PMFBY",
+      "scheme_name": "PMFBY – Pradhan Mantri Fasal Bima Yojana",
+      "category": "Crop Insurance",
+      "government": "Central",
+      "source_document": "PMFBY Revised Operational Guidelines, MoAFW, 2020",
+      "source_section": "Chapter 4: Premium Rates – Farmer share capped at 2% Kharif, 1.5% Rabi",
+      "official_url": "https://pmfby.gov.in",
+      "portal_links": [{"name": "PMFBY Portal", "url": "https://pmfby.gov.in"}],
+      "application_cost": 1,
+      "processing_days": 15,
+      "requirements": [
+        {"id": "land","label": "Cultivable land holding","field": "land_holding","operator": ">","value": 0,"document": "land_record","doc_label": "7/12 Extract or Loan passbook","why_required": "Must be a cultivating farmer to enroll.","portal": "https://mahabhulekh.maharashtra.gov.in","doc_cost": 15,"doc_days": 1}
+      ],
+      "benefit": {"type": "insurance","amount": null,"period": "per_season","description": "Comprehensive crop loss coverage at Rs 1 token premium for small/marginal farmers"},
+      "relevance": {"occupations": ["farmer"]},
+      "tags": ["insurance","crop","central"]
+    },
+    {
+      "scheme_id": "KCC",
+      "scheme_name": "Kisan Credit Card (KCC)",
+      "category": "Agricultural Credit",
+      "government": "Central",
+      "source_document": "RBI/NABARD KCC Revised Scheme Guidelines, 2012 & 2018 Amendment",
+      "source_section": "Para 3.1: Eligibility – Farmer with cultivable land; interest subvention up to Rs 3 lakh at 4% p.a.",
+      "official_url": "https://www.nabard.org/content.aspx?id=572",
+      "portal_links": [{"name": "NABARD KCC", "url": "https://www.nabard.org/content.aspx?id=572"}],
+      "application_cost": 0,
+      "processing_days": 14,
+      "requirements": [
+        {"id": "land","label": "Cultivable land (any holding)","field": "land_holding","operator": ">","value": 0,"document": "land_record","doc_label": "7/12 Extract / Land Patta","why_required": "KCC requires proof of cultivable land.","portal": "https://mahabhulekh.maharashtra.gov.in","doc_cost": 15,"doc_days": 1}
+      ],
+      "benefit": {"type": "credit_limit","amount": 300000,"period": "per_year","description": "Short-term crop loan up to Rs 3 lakh at 4% p.a. with timely repayment interest subvention"},
+      "relevance": {"occupations": ["farmer"]},
+      "tags": ["credit","loan","central"]
+    },
+    {
+      "scheme_id": "SHET-TALE",
+      "scheme_name": "Magel Tyala Shet Tale (Farm Pond Scheme)",
+      "category": "Water Conservation",
+      "government": "Maharashtra State",
+      "source_document": "Maharashtra MGNREGS + Agriculture Dept. GR, 2017",
+      "source_section": "GR Krishi-2017/CR-142 – Farm pond subsidy up to Rs 50,000",
+      "official_url": "https://mahadbtmahait.gov.in/Farmer/Home/Index",
+      "portal_links": [{"name": "MahaDBT Farmer Portal", "url": "https://mahadbtmahait.gov.in/Farmer/Home/Index"}],
+      "application_cost": 0,
+      "processing_days": 60,
+      "requirements": [
+        {"id": "land","label": "Minimum 0.6 hectare land holding","field": "land_holding","operator": ">=","value": 0.6,"document": "land_record","doc_label": "7/12 Extract","why_required": "Farm pond requires sufficient land area; minimum 0.6 ha mandated.","portal": "https://mahabhulekh.maharashtra.gov.in","doc_cost": 15,"doc_days": 1}
+      ],
+      "benefit": {"type": "subsidy","amount": 50000,"period": "one_time","description": "Subsidy up to Rs 50,000 for constructing a farm pond for water storage"},
+      "relevance": {"occupations": ["farmer"]},
+      "tags": ["water","infrastructure","subsidy","state"]
+    },
+    {
+      "scheme_id": "FUNDKAR-ORCHARD",
+      "scheme_name": "Bhausaheb Fundkar Phalobag Lagwad Yojana",
+      "category": "Horticulture",
+      "government": "Maharashtra State",
+      "source_document": "Maharashtra Horticulture Dept., Bhausaheb Fundkar Scheme Guidelines, 2018",
+      "source_section": "Section 2: 100% subsidy for orchard planting over 3 years",
+      "official_url": "https://mahabloom.in",
+      "portal_links": [{"name": "MahaBloom Portal", "url": "https://mahabloom.in"},{"name": "MahaDBT", "url": "https://mahadbtmahait.gov.in/Farmer/Home/Index"}],
+      "application_cost": 0,
+      "processing_days": 90,
+      "requirements": [
+        {"id": "land","label": "Land holding (minimum 0.2 hectare)","field": "land_holding","operator": ">=","value": 0.2,"document": "land_record","doc_label": "7/12 Extract","why_required": "Orchard planting requires minimum land area.","portal": "https://mahabhulekh.maharashtra.gov.in","doc_cost": 15,"doc_days": 1}
+      ],
+      "benefit": {"type": "subsidy","amount": null,"period": "3_years","description": "100% subsidy for fruit orchard planting over 3 years (mango, cashew, orange, pomegranate)"},
+      "relevance": {"occupations": ["farmer"]},
+      "tags": ["horticulture","subsidy","state"]
+    },
+    {
+      "scheme_id": "PM-KUSUM",
+      "scheme_name": "PM-KUSUM (Solar Agricultural Pumps)",
+      "category": "Renewable Energy",
+      "government": "Central",
+      "source_document": "MNRE PM-KUSUM Scheme Guidelines, 2019; Component-B Standalone Solar Pumps",
+      "source_section": "Para 4.2: Subsidy Structure – 90% subsidy for off-grid solar pumps (60% Central + 30% State)",
+      "official_url": "https://pmkusum.mnre.gov.in",
+      "portal_links": [{"name": "PM-KUSUM Portal", "url": "https://pmkusum.mnre.gov.in"}],
+      "application_cost": 0,
+      "processing_days": 120,
+      "requirements": [
+        {"id": "land","label": "Agricultural land","field": "land_holding","operator": ">","value": 0,"document": "land_record","doc_label": "7/12 Extract","why_required": "Solar pump must be installed on agricultural land.","portal": "https://mahabhulekh.maharashtra.gov.in","doc_cost": 15,"doc_days": 1}
+      ],
+      "benefit": {"type": "subsidy_percentage","amount": 90,"period": "one_time","description": "Up to 90% subsidy on solar agricultural pump installation (5 HP or 7.5 HP pump)"},
+      "relevance": {"occupations": ["farmer"]},
+      "tags": ["solar","energy","subsidy","central"]
+    },
+    {
+      "scheme_id": "GOPINATH-VIMA",
+      "scheme_name": "Gopinath Munde Shetkari Apghat Vima Yojana",
+      "category": "Accident Insurance",
+      "government": "Maharashtra State",
+      "source_document": "GR No. Krishi-2015/Pra.Kra.190/11A, Agriculture Dept., Maharashtra",
+      "source_section": "Clause 4: Rs 2 lakh for accidental death; Rs 1 lakh for permanent disability",
+      "official_url": "https://krishi.maharashtra.gov.in",
+      "portal_links": [{"name": "Maharashtra Krishi Portal", "url": "https://krishi.maharashtra.gov.in"},{"name": "MahaDBT", "url": "https://mahadbtmahait.gov.in/Farmer/Home/Index"}],
+      "application_cost": 0,
+      "processing_days": 30,
+      "requirements": [
+        {"id": "land","label": "Registered farmer (any land holding)","field": "land_holding","operator": ">","value": 0,"document": "land_record","doc_label": "7/12 Extract","why_required": "Only registered landowning farmers are covered.","portal": "https://mahabhulekh.maharashtra.gov.in","doc_cost": 15,"doc_days": 1}
+      ],
+      "benefit": {"type": "insurance","amount": 200000,"period": "annual_cover","description": "Rs 2 lakh for accidental death; Rs 1 lakh for permanent disability; Rs 50,000 for partial disability"},
+      "relevance": {"occupations": ["farmer"]},
+      "tags": ["insurance","accident","state"]
+    },
+    {
+      "scheme_id": "MJPKY",
+      "scheme_name": "Mahatma Jotirao Phule Karjmukti Yojana (Loan Waiver)",
+      "category": "Debt Relief",
+      "government": "Maharashtra State",
+      "source_document": "Maharashtra GR, Finance Dept., 2019 – Short-term crop loan waiver",
+      "source_section": "Section 3: Waiver up to Rs 2 lakh for short-term crop loans outstanding as of 30-Sep-2019",
+      "official_url": "https://karjmukti.maharashtra.gov.in",
+      "portal_links": [{"name": "Karjmukti Portal", "url": "https://karjmukti.maharashtra.gov.in"}],
+      "application_cost": 0,
+      "processing_days": 90,
+      "requirements": [
+        {"id": "land","label": "Farmer with agricultural land","field": "land_holding","operator": ">","value": 0,"document": "land_record","doc_label": "7/12 Extract","why_required": "Scheme is for farmer loan relief only.","portal": "https://mahabhulekh.maharashtra.gov.in","doc_cost": 15,"doc_days": 1},
+        {"id": "income","label": "Annual income below Rs 1.5 lakh","field": "annual_income","operator": "<=","value": 150000,"document": "income_certificate","doc_label": "Income Certificate from Tehsildar","why_required": "Loan waiver targeted at low-income farmers.","portal": "https://aaplesarkar.mahaonline.gov.in","doc_cost": 30,"doc_days": 7}
+      ],
+      "benefit": {"type": "loan_waiver","amount": 200000,"period": "one_time","description": "Outstanding short-term crop loan waiver up to Rs 2 lakh"},
+      "relevance": {"occupations": ["farmer"]},
+      "tags": ["loan_waiver","debt_relief","state"]
+    },
+    {
+      "scheme_id": "ENAM",
+      "scheme_name": "eNAM – National Agriculture Market",
+      "category": "Market Access",
+      "government": "Central",
+      "source_document": "eNAM Scheme Document, SFAC, Ministry of Agriculture, 2016",
+      "source_section": "Para 2: Any farmer can sell on eNAM platform through registered APMCs",
+      "official_url": "https://enam.gov.in",
+      "portal_links": [{"name": "eNAM Portal", "url": "https://enam.gov.in"}],
+      "application_cost": 0,
+      "processing_days": 7,
+      "requirements": [
+        {"id": "land","label": "Agricultural produce to sell","field": "land_holding","operator": ">","value": 0,"document": "land_record","doc_label": "7/12 Extract or any farm identity","why_required": "Must be a farmer with produce to register on eNAM.","portal": "https://mahabhulekh.maharashtra.gov.in","doc_cost": 15,"doc_days": 1}
+      ],
+      "benefit": {"type": "market_access","amount": null,"period": "ongoing","description": "Direct access to transparent electronic market for agricultural commodities"},
+      "relevance": {"occupations": ["farmer"]},
+      "tags": ["market","digital","central"]
+    },
+    {
+      "scheme_id": "POCRA",
+      "scheme_name": "PoCRA – Nanaji Deshmukh Krishi Sanjivani",
+      "category": "Micro-Irrigation",
+      "government": "Maharashtra State (World Bank Assisted)",
+      "source_document": "PoCRA Project Implementation Plan, 2018; Maharashtra Agriculture Dept.",
+      "source_section": "Component 2: On-farm investments – 50%-75% subsidy on drip/sprinkler/shade nets",
+      "official_url": "https://pocra.maharashtra.gov.in",
+      "portal_links": [{"name": "PoCRA Portal", "url": "https://pocra.maharashtra.gov.in"}],
+      "application_cost": 0,
+      "processing_days": 60,
+      "requirements": [
+        {"id": "land","label": "Land in PoCRA project districts","field": "land_holding","operator": ">","value": 0,"document": "land_record","doc_label": "7/12 Extract (Vidarbha/Marathwada districts)","why_required": "PoCRA covers 5,142 revenue circles in Vidarbha and Marathwada.","portal": "https://mahabhulekh.maharashtra.gov.in","doc_cost": 15,"doc_days": 1},
+        {"id": "income","label": "Small or marginal farmer (income below Rs 3 lakh)","field": "annual_income","operator": "<=","value": 300000,"document": "income_certificate","doc_label": "Income Certificate from Tehsildar","why_required": "Higher subsidy (75%) for small/marginal farmers.","portal": "https://aaplesarkar.mahaonline.gov.in","doc_cost": 30,"doc_days": 7}
+      ],
+      "benefit": {"type": "subsidy_percentage","amount": 75,"period": "one_time","description": "50% to 75% subsidy for drip irrigation, sprinkler systems, and shade nets"},
+      "relevance": {"occupations": ["farmer"]},
+      "tags": ["irrigation","subsidy","state","worldbank"]
+    },
+    {
+      "scheme_id": "AMBEDKAR-KRISHI",
+      "scheme_name": "Dr. Babasaheb Ambedkar Krishi Swavalamban Yojana",
+      "category": "SC/ST Farmer Support",
+      "government": "Maharashtra State",
+      "source_document": "Maharashtra Social Justice Dept. GR – Dr. Ambedkar Krishi Swavalamban, 2021",
+      "source_section": "Section 2.1: Financial assistance for SC/ST farmers for water conservation and input support",
+      "official_url": "https://sjsa.maharashtra.gov.in",
+      "portal_links": [{"name": "SJSA Portal", "url": "https://sjsa.maharashtra.gov.in"}],
+      "application_cost": 0,
+      "processing_days": 45,
+      "requirements": [
+        {"id": "caste","label": "SC/ST category","field": "caste_category","operator": "==","value": "sc_st","document": "caste_certificate","doc_label": "Caste Certificate (SC/ST) from Tehsildar","why_required": "Scheme is exclusively for SC and ST farmers.","portal": "https://aaplesarkar.mahaonline.gov.in","doc_cost": 30,"doc_days": 15},
+        {"id": "land","label": "Agricultural land (up to 6 hectares)","field": "land_holding","operator": ">","value": 0,"document": "land_record","doc_label": "7/12 Extract","why_required": "Must be a farming family with land record.","portal": "https://mahabhulekh.maharashtra.gov.in","doc_cost": 15,"doc_days": 1}
+      ],
+      "benefit": {"type": "composite","amount": 250000,"period": "one_time","description": "Financial assistance up to Rs 2.5 lakh for water conservation, farm pond, bore well, and agricultural inputs"},
+      "relevance": {"occupations": ["farmer"]},
+      "tags": ["sc_st","social_justice","water","state"]
+    },
+    {
+      "scheme_id": "PKVY",
+      "scheme_name": "PKVY – Paramparagat Krishi Vikas Yojana (Organic Farming)",
+      "category": "Organic Farming",
+      "government": "Central",
+      "source_document": "PKVY Scheme Guidelines, MoAFW, 2015; Revised 2020",
+      "source_section": "Para 5: Rs 50,000/hectare/year for 3 years (Input cost Rs 31,000 + Value chain Rs 19,000)",
+      "official_url": "https://pgsindia-ncof.gov.in",
+      "portal_links": [{"name": "PGS India Portal", "url": "https://pgsindia-ncof.gov.in"}],
+      "application_cost": 0,
+      "processing_days": 60,
+      "requirements": [
+        {"id": "land","label": "Minimum 0.5 hectare cultivable land","field": "land_holding","operator": ">=","value": 0.5,"document": "land_record","doc_label": "7/12 Extract","why_required": "Minimum land required for cluster-based organic farming certification.","portal": "https://mahabhulekh.maharashtra.gov.in","doc_cost": 15,"doc_days": 1}
+      ],
+      "benefit": {"type": "fixed_per_hectare","amount": 50000,"period": "annual_3years","description": "Rs 50,000 per hectare per year for 3 years to promote organic farming and certification"},
+      "relevance": {"occupations": ["farmer"]},
+      "tags": ["organic","subsidy","central"]
+    },
+    {
+      "scheme_id": "AIF",
+      "scheme_name": "Agriculture Infrastructure Fund (AIF)",
+      "category": "Post-Harvest Infrastructure",
+      "government": "Central",
+      "source_document": "AIF Scheme Guidelines, MoAFW, August 2020",
+      "source_section": "Section 3: Interest subvention of 3% p.a. for post-harvest management infra financing",
+      "official_url": "https://agriinfra.dac.gov.in",
+      "portal_links": [{"name": "AIF Portal", "url": "https://agriinfra.dac.gov.in"}],
+      "application_cost": 0,
+      "processing_days": 90,
+      "requirements": [
+        {"id": "land","label": "Agricultural land or farm-based enterprise","field": "land_holding","operator": ">","value": 0,"document": "land_record","doc_label": "7/12 Extract or Business registration","why_required": "AIF requires proof of farming activity or agri-enterprise.","portal": "https://mahabhulekh.maharashtra.gov.in","doc_cost": 15,"doc_days": 1}
+      ],
+      "benefit": {"type": "interest_subvention","amount": null,"period": "7_years","description": "3% interest subvention on loans up to Rs 2 crore for cold storage, warehouses, processing units"},
+      "relevance": {"occupations": ["farmer","business"]},
+      "tags": ["infrastructure","post_harvest","central"]
+    },
+    {
+      "scheme_id": "PMKSY",
+      "scheme_name": "PMKSY – PM Krishi Sinchayee Yojana (Micro Irrigation)",
+      "category": "Micro-Irrigation",
+      "government": "Central",
+      "source_document": "PMKSY-PDMC Guidelines, 2016; MIDH Implementing Agency",
+      "source_section": "Para 6.1: 80% subsidy for marginal farmers (<1 ha); 70% for small farmers (1-2 ha)",
+      "official_url": "https://pmksy.gov.in",
+      "portal_links": [{"name": "PMKSY Portal", "url": "https://pmksy.gov.in"}],
+      "application_cost": 0,
+      "processing_days": 45,
+      "requirements": [
+        {"id": "land","label": "Agricultural land (any size)","field": "land_holding","operator": ">","value": 0,"document": "land_record","doc_label": "7/12 Extract","why_required": "Micro-irrigation subsidy is land-area based.","portal": "https://mahabhulekh.maharashtra.gov.in","doc_cost": 15,"doc_days": 1}
+      ],
+      "benefit": {"type": "subsidy_tiered","amount": 80,"period": "one_time","description": "80% subsidy for marginal farmers (<1 ha); 70% for small farmers (1-2 ha) on drip/sprinkler installation"},
+      "relevance": {"occupations": ["farmer"]},
+      "tags": ["irrigation","subsidy","central"]
+    },
+    {
+      "scheme_id": "SMAM",
+      "scheme_name": "SMAM – Sub Mission on Agricultural Mechanization",
+      "category": "Farm Mechanization",
+      "government": "Central",
+      "source_document": "SMAM Scheme Guidelines, 2014-15; MoAFW",
+      "source_section": "Para 7: Subsidy on tractors – SC/ST/Women 50%; Others 40%; max Rs 1 lakh",
+      "official_url": "https://agrimachinery.nic.in",
+      "portal_links": [{"name": "SMAM Portal", "url": "https://agrimachinery.nic.in"}],
+      "application_cost": 0,
+      "processing_days": 45,
+      "requirements": [
+        {"id": "land","label": "Agricultural land holding","field": "land_holding","operator": ">","value": 0,"document": "land_record","doc_label": "7/12 Extract","why_required": "Mechanization subsidy is for active farmers with land.","portal": "https://mahabhulekh.maharashtra.gov.in","doc_cost": 15,"doc_days": 1},
+        {"id": "income","label": "Annual income below Rs 6 lakh","field": "annual_income","operator": "<=","value": 600000,"document": "income_certificate","doc_label": "Income Certificate","why_required": "Priority to small and marginal farmers.","portal": "https://aaplesarkar.mahaonline.gov.in","doc_cost": 30,"doc_days": 7}
+      ],
+      "benefit": {"type": "subsidy","amount": 100000,"period": "one_time","description": "Subsidies up to Rs 1 lakh for tractors; 40-50% subsidy on other farm machinery"},
+      "relevance": {"occupations": ["farmer"]},
+      "tags": ["mechanization","subsidy","central"]
+    },
+    {
+      "scheme_id": "SHC-RKVY",
+      "scheme_name": "Soil Health Card (SHC) – RKVY",
+      "category": "Soil Testing",
+      "government": "Central",
+      "source_document": "Soil Health Card Scheme, MoAFW, 2015",
+      "source_section": "All farmers eligible; issued every 2 years with crop-wise fertilizer recommendation",
+      "official_url": "https://soilhealth.dac.gov.in",
+      "portal_links": [{"name": "Soil Health Portal", "url": "https://soilhealth.dac.gov.in"}],
+      "application_cost": 0,
+      "processing_days": 21,
+      "requirements": [
+        {"id": "land","label": "Agricultural land (any size)","field": "land_holding","operator": ">","value": 0,"document": "land_record","doc_label": "7/12 Extract or any land proof","why_required": "Soil testing is done on the farmer field.","portal": "https://mahabhulekh.maharashtra.gov.in","doc_cost": 15,"doc_days": 1}
+      ],
+      "benefit": {"type": "advisory","amount": null,"period": "biennial","description": "Free soil testing and customized fertilizer/crop advisory card every 2 years"},
+      "relevance": {"occupations": ["farmer"]},
+      "tags": ["soil","advisory","free","central"]
+    },
+    {
+      "scheme_id": "CM-KRISHI-ANNA",
+      "scheme_name": "Mukhyamantri Krishi ani Anna Prakriya Yojana",
+      "category": "Food Processing",
+      "government": "Maharashtra State",
+      "source_document": "Maharashtra Industry Dept. GR, Food Processing Policy 2022",
+      "source_section": "Section 4: Grants for agri-food processing units; 25% capital subsidy up to Rs 25 lakh",
+      "official_url": "https://maitri.mahaonline.gov.in",
+      "portal_links": [{"name": "Maitri Portal", "url": "https://maitri.mahaonline.gov.in"}],
+      "application_cost": 500,
+      "processing_days": 120,
+      "requirements": [
+        {"id": "land","label": "Agricultural land or processing unit","field": "land_holding","operator": ">","value": 0,"document": "land_record","doc_label": "7/12 Extract or Property documents","why_required": "Processing unit must be on/near agricultural land.","portal": "https://mahabhulekh.maharashtra.gov.in","doc_cost": 15,"doc_days": 1}
+      ],
+      "benefit": {"type": "grant","amount": 2500000,"period": "one_time","description": "25% capital subsidy up to Rs 25 lakh for agri-food processing unit setup"},
+      "relevance": {"occupations": ["farmer","business"]},
+      "tags": ["food_processing","subsidy","state"]
+    },
+    {
+      "scheme_id": "NAMO-DRONE-DIDI",
+      "scheme_name": "Namo Drone Didi Scheme",
+      "category": "Precision Agriculture",
+      "government": "Central",
+      "source_document": "GoI Cabinet Approval, Nov 2023 – Namo Drone Didi Scheme for SHGs",
+      "source_section": "15,000 drones to SHG clusters; 80% subsidy; precision nutrient/pesticide application",
+      "official_url": "https://agricoop.nic.in",
+      "portal_links": [{"name": "Agri-Cooperation Portal", "url": "https://agricoop.nic.in"}],
+      "application_cost": 0,
+      "processing_days": 90,
+      "requirements": [
+        {"id": "land","label": "Farm land for drone services","field": "land_holding","operator": ">","value": 0,"document": "land_record","doc_label": "7/12 Extract","why_required": "Drone services deployed on registered agricultural land.","portal": "https://mahabhulekh.maharashtra.gov.in","doc_cost": 15,"doc_days": 1}
+      ],
+      "benefit": {"type": "service","amount": null,"period": "per_season","description": "Access to drones for precision nutrient and pesticide distribution; SHG members get priority"},
+      "relevance": {"occupations": ["farmer"]},
+      "tags": ["drone","precision_ag","technology","central"]
+    },
+    {
+      "scheme_id": "MAHA-KRISHI-SAMRUDHI",
+      "scheme_name": "Maha Krishi Samrudhi Yojana",
+      "category": "Agro-Processing Finance",
+      "government": "Maharashtra State",
+      "source_document": "Maharashtra State Agriculture Dept. and NABARD, MoU 2022",
+      "source_section": "Term loans and working capital at concessional rates for agro-processing enterprises",
+      "official_url": "https://krishi.maharashtra.gov.in",
+      "portal_links": [{"name": "Maharashtra Krishi Portal", "url": "https://krishi.maharashtra.gov.in"}],
+      "application_cost": 0,
+      "processing_days": 60,
+      "requirements": [
+        {"id": "land","label": "Agricultural land or agro-enterprise","field": "land_holding","operator": ">","value": 0,"document": "land_record","doc_label": "7/12 Extract","why_required": "Scheme targets farm-based enterprises.","portal": "https://mahabhulekh.maharashtra.gov.in","doc_cost": 15,"doc_days": 1},
+        {"id": "income","label": "Annual income below Rs 5 lakh","field": "annual_income","operator": "<=","value": 500000,"document": "income_certificate","doc_label": "Income Certificate","why_required": "Scheme targets small agro-processors.","portal": "https://aaplesarkar.mahaonline.gov.in","doc_cost": 30,"doc_days": 7}
+      ],
+      "benefit": {"type": "loan_concessional","amount": null,"period": "7_years","description": "Term loans and working capital at concessional interest for agro-processing startups"},
+      "relevance": {"occupations": ["farmer","business"]},
+      "tags": ["finance","agro_processing","state"]
+    },
+    {
+      "scheme_id": "MAHA-AGRI-RENTAL",
+      "scheme_name": "Maha Agri-Machinery Rental Scheme",
+      "category": "Farm Mechanization",
+      "government": "Maharashtra State",
+      "source_document": "Maharashtra Agriculture Dept. GR – CHC Custom Hiring Centre Policy, 2020",
+      "source_section": "Section 3: Subsidized rental of heavy agri equipment via CHC network",
+      "official_url": "https://mahadbtmahait.gov.in",
+      "portal_links": [{"name": "MahaDBT Portal", "url": "https://mahadbtmahait.gov.in/Farmer/Home/Index"},{"name": "CHC Farm Machinery App", "url": "https://chcfarmachinery.gov.in"}],
+      "application_cost": 0,
+      "processing_days": 7,
+      "requirements": [
+        {"id": "land","label": "Registered farmer with land","field": "land_holding","operator": ">","value": 0,"document": "land_record","doc_label": "7/12 Extract","why_required": "Rental services are for registered farmers with land records.","portal": "https://mahabhulekh.maharashtra.gov.in","doc_cost": 15,"doc_days": 1}
+      ],
+      "benefit": {"type": "service","amount": null,"period": "per_use","description": "Subsidized rental of heavy agricultural equipment: combine harvesters, tractors, rotavators via CHC network"},
+      "relevance": {"occupations": ["farmer"]},
+      "tags": ["mechanization","rental","state"]
+    }
+  ]
+}

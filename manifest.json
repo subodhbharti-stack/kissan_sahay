@@ -1,0 +1,20 @@
+﻿{
+  "name": "KisanSahay – Scheme Eligibility Assistant",
+  "short_name": "KisanSahay",
+  "description": "Free AI-powered eligibility assistant for 21 government schemes for farmers and low-income citizens in Maharashtra",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#0f1c14",
+  "theme_color": "#1fa65f",
+  "orientation": "any",
+  "icons": [
+    { "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%231fa65f'/><text y='75' x='15' font-size='65'>🌾</text></svg>", "sizes": "192x192", "type": "image/svg+xml" }
+  ],
+  "categories": ["government", "finance", "productivity"],
+  "lang": "en",
+  "dir": "ltr",
+  "shortcuts": [
+    { "name": "Check Eligibility", "short_name": "Check", "description": "Quickly check your scheme eligibility", "url": "./index.html#check" },
+    { "name": "All Schemes", "short_name": "Schemes", "description": "Browse all 21 schemes", "url": "./index.html#schemes" }
+  ]
+}
